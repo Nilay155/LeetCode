@@ -55,10 +55,10 @@ public:
         return dp[0][1][2];
     }
     int maxProfit(vector<int>& prices) {
-        int n = prices.size();
-        int i = 0, capacity = 2;
-        bool flag = true;
-        vector<vector<vector<int>>> dp(n,vector<vector<int>> (2,vector<int>(3,-1)));
+        // int n = prices.size();
+        // int i = 0, capacity = 2;
+        // bool flag = true;
+        // vector<vector<vector<int>>> dp(n,vector<vector<int>> (2,vector<int>(3,-1)));
 
 
         // int res = dfs(prices,i,capacity,flag,n,dp);
