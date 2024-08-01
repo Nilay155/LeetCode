@@ -24,11 +24,52 @@ public:
         }
         return dp[i][flag][capacity] = max(buy,sell);
     }
+    int tabulation(vector<int> &prices) {
+        int n = prices.size();
+
+        vector<vector<vector<int>>> dp(n+1,vector<vector<int>> (2,vector<int>(3,0)));
+
+        for(int i = n-1 ; i >= 0 ;i--) {
+            for(int flag = 1 ; flag >= 0 ; flag--) {
+                for(int capacity =  1 ; capacity < 3 ; capacity++) {
+                    int buy = 0;
+                    int sell = 0;
+                    if(flag) {
+                        buy = max(-prices[i] + dp[i+1][flag == 0 ? 1 : 0][capacity],0 + dp[i+1][flag][capacity]);
+                    } else {
+                        sell = max(prices[i] + dp[i+1][flag == 0 ? 1 : 0][capacity-1],0 + dp[i+1][flag][capacity]);
+                    }
+                    dp[i][flag][capacity] = max(buy,sell);
+                }
+            }
+        }
+
+        // for(int i = 0 ; i <= n ; i++) {
+        //     for(int j = 0 ; j < 2 ; j++) {
+        //         for(int k = 0 ; k < 3 ; k++) {
+
+        //             cout << dp[i][j][k] << "   ";
+        //         }cout << endl;
+        //     }cout << endl;
+        // }
+        return dp[0][1][2];
+    }
     int maxProfit(vector<int>& prices) {
         int n = prices.size();
         int i = 0, capacity = 2;
         bool flag = true;
         vector<vector<vector<int>>> dp(n,vector<vector<int>> (2,vector<int>(3,-1)));
-        return dfs(prices,i,capacity,flag,n,dp);
+
+
+        // int res = dfs(prices,i,capacity,flag,n,dp);
+        //  for(int i = 0 ; i < n ; i++) {
+        //     for(int j = 0; j < 2 ; j++) {
+        //         for(int k = 0 ; k < 3 ; k++) {
+        //             cout << dp[i][j][k] << "  ";
+        //         }cout << endl;
+        //     } cout << endl;
+        // }
+        // return res;
+        return tabulation(prices);
     }
 };
