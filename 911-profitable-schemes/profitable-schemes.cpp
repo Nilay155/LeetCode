@@ -1,27 +1,32 @@
 class Solution {
 public:
-    int MOD = 1e9 + 7;
-
-    int solve(vector<int> &groups,vector<int> &profit,int num,int n,int i,int &m,int &minProfit,vector<vector<vector<long long int>>> &dp) {
-        
-        if(i >= m) {
-            if(num >= minProfit) return 1;
-            else return 0;
+    int totalPeople;
+    int groupSize;
+    int minProfit;
+    int dp[101][101][101];
+    int mod = 1e9 + 7;
+    int solve(int i, int currProfit, int currPeople, vector<int>& group, vector<int>& profit){
+        if(currPeople>totalPeople){
+            return 0;
         }
-        if(dp[i][n][num] != -1) return dp[i][n][num];
+        if(i == groupSize){
+            if(currProfit == minProfit){
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+        if(dp[i][currProfit][currPeople]!= -1) return dp[i][currProfit][currPeople];
+        int take = solve(i+1, min(currProfit + profit[i], minProfit), currPeople+group[i], group, profit);
+        int nottake = solve(i+1, currProfit, currPeople, group, profit);
 
-        int notPick = solve(groups,profit,num,n,i+1,m,minProfit,dp) % MOD;
-        int pick = 0;
-
-        if(groups[i] <= n) pick = solve(groups,profit,min(num+profit[i],minProfit),n-groups[i],i+1,m,minProfit,dp)%MOD;
-        return dp[i][n][num] = (pick + notPick)%MOD;
+        return dp[i][currProfit][currPeople] = (take + nottake)%mod;
     }
-    int profitableSchemes(int n, int minProfit, vector<int>& group, vector<int>& profit) {
-        int m = group.size();
-        // int temp = 0;
-        // for(int num : group) temp += num;
-        // cout << temp << endl;
-       vector< vector<vector<long long int>>> dp(102,vector<vector<long long int>>(102,vector<long long int>(102,-1)));
-        return solve(group,profit,0,n,0,m,minProfit,dp);
+    int profitableSchemes(int n, int mini, vector<int>& group, vector<int>& profit) {
+        totalPeople = n;
+        groupSize = group.size();
+        minProfit = mini;
+        memset(dp, -1, sizeof(dp));
+        return solve(0, 0, 0, group, profit);
     }
 };
