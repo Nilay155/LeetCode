@@ -44,7 +44,7 @@ public:
         for (int r = 0; r <= n; r++) {
             for (int c = 0; c <= n; c++) {
                 probability += dp[r][c];
-                cout << dp[r][c] << "  ";
+                // cout << dp[r][c] << "  ";
             }cout << endl;
         }
 
