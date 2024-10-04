@@ -33,10 +33,10 @@ public:
             }
         }
 
-        for(int i = 0 ; i <=n ; i++) {
-            for(int t = 0 ; t <= time ; t++) cout << dp[i][t] << "  ";
-            cout << endl;
-        }
+        // for(int i = 0 ; i <=n ; i++) {
+        //     for(int t = 0 ; t <= time ; t++) cout << dp[i][t] << "  ";
+        //     cout << endl;
+        // }
         return dp[n][time];
     }
     int videoStitching(vector<vector<int>>& clips, int time) {
