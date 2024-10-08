@@ -46,6 +46,9 @@ public:
                         return dp[i][j][move] = max({right,left,top,bottom});
                 }
     int longestIncreasingPath(vector<vector<int>>& matrix) {
+        ios_base::sync_with_stdio(0);
+        cin.tie(0);
+        cout.tie(0);
         
         int n = matrix.size();
         int m = matrix[0].size();
