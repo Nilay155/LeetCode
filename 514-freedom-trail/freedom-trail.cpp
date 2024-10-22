@@ -1,34 +1,22 @@
 class Solution {
 public:
-    int n = 0;
-    int dp[101][101];
-    unordered_map<char,vector<int>> mpp;
-    int solve(string ring,string key,int i,int j) {
-        if(j >= key.size()) return 0;
-        if(dp[i][j] != -1) return dp[i][j];
-
-        int ans = 1e9;
-        for(int idx : mpp[key[j]]) {
-            
-            int clockWise = 1e9;
-            int anticlockWise = 1e9;
-            if(idx >= i) {
-                clockWise = min(clockWise,idx-i);
-                anticlockWise = min(anticlockWise,n-idx+i);
-            } else {
-                clockWise = min(clockWise,i-idx);
-                anticlockWise = min(anticlockWise,n-i+idx);
-            }
-
-            ans = min(ans,1 + anticlockWise + solve(ring,key,idx,j+1));
-            ans = min(ans,1 + clockWise + solve(ring,key,idx,j+1));
-        }
-        return dp[i][j] = ans;
-    }
+    int n,m;
+    vector<int> pos[26];
     int findRotateSteps(string ring, string key) {
-        n = ring.size();
-        memset(dp,-1,sizeof(dp));
-        for(int i = 0 ; i < n ; i++) mpp[ring[i]].push_back(i);
-        return solve(ring,key,0,0);
+        n = ring.size(), m = key.size();
+        for(int i = 0; i < n; i++)
+            pos[ring[i] - 'a'].push_back(i);
+        vector<vector<int>> memo(n, vector<int>(m, INT_MAX));
+        return helper(0, 0, memo, ring, key);
+    }
+    int helper(int i, int j, vector<vector<int>>& memo, string &ring, string &key){
+        if(j == m) return 0;
+        if(memo[i][j] != INT_MAX) return memo[i][j];
+        int best = INT_MAX;
+        for(int &next: pos[key[j] - 'a']){
+            int diff = abs(i - next);
+            best = min(best, min(diff, n - diff) + helper(next, j + 1, memo, ring, key));
+        }
+        return memo[i][j] = best + 1;
     }
 };
