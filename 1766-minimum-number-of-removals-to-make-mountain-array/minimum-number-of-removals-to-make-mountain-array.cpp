@@ -37,7 +37,7 @@ public:
         int n = nums.size();
         memset(dp, -1, sizeof(dp));
         int longestMountainLength = solve(nums, 1, 0, 0, 0,n);
-        cout << longestMountainLength << endl;
+        // cout << longestMountainLength << endl;
         return n - longestMountainLength - 1;  // -1 for the dummy element
     }
 };
