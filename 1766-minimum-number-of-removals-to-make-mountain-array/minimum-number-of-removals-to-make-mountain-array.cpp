@@ -31,6 +31,8 @@ public:
     }
 
     int minimumMountainRemovals(vector<int>& nums) {
+        ios::sync_with_stdio(false);
+        cin.tie(nullptr);
         nums.insert(nums.begin(), 0);  // Insert dummy value for easier indexing
         int n = nums.size();
         memset(dp, -1, sizeof(dp));
