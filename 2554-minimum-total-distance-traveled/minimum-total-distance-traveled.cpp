@@ -1,14 +1,13 @@
 class Solution {
 public:
-    // map<pair<int,vector<int>>,int> mpp;
-    // unordered_map<int,int> map;
+
     long long dp[101][101][101];
+
     long long solve(vector<int> &robot,vector<int> &distance,vector<int> &limit,int i,int j,int cnt,int &n,int &m) {
         if(i >= n) return 0; // Repairing Done For All Robots
         if(j >= m) return LLONG_MAX;
         if(dp[i][j][cnt] != -1) return dp[i][j][cnt];
-        // if(mpp.find({i,limit}) != mpp.end()) return mpp[{i,limit}];
-
+      
         long long op1 = LLONG_MAX;
         long long op2 = 0 + solve(robot,distance,limit,i,j+1,0,n,m);
 
@@ -21,6 +20,9 @@ public:
         return dp[i][j][cnt] = min(op1,op2);
     }
     long long minimumTotalDistance(vector<int>& robot, vector<vector<int>>& factory) {
+        ios::sync_with_stdio(false);
+        cin.tie(nullptr);
+ 
         int n = robot.size();
         int m = factory.size();
 
