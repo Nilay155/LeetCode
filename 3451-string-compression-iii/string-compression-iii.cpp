@@ -2,6 +2,9 @@ class Solution {
 public:
     string compressedString(string s) {
         int n = s.size();
+        
+        ios::sync_with_stdio(false);
+        cin.tie(nullptr);
 
         stack<pair<char,int>> st;
 
