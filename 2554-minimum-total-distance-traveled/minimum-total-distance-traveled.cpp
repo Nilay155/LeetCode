@@ -15,38 +15,31 @@ public:
             limit[i] = factory[i][1];
         }
 
+        // Use a large number as a placeholder for infinity within a safe range
+        const long long INF = 1e15;
+
         // Initialize DP table
-        vector<vector<vector<long long>>> dp(n + 1, vector<vector<long long>>(m + 1, vector<long long>(101, LLONG_MAX)));
-        
+        vector<vector<long long>> dp(n + 1, vector<long long>(m + 1, INF));
+
         // Base case: No robots to repair means total distance is zero
         for (int j = 0; j <= m; j++) {
-            for (int cnt = 0; cnt <= 100; cnt++) {
-                dp[n][j][cnt] = 0;
-            }
+            dp[n][j] = 0;
         }
 
         // Fill the DP table in bottom-up manner
         for (int i = n - 1; i >= 0; i--) {
             for (int j = m - 1; j >= 0; j--) {
-                for (int cnt = 0; cnt <= limit[j]; cnt++) {
-                    long long op1 = LLONG_MAX;
-                    long long op2 = dp[i][j + 1][0]; // Option to skip this factory
+                dp[i][j] = dp[i][j + 1]; // Option to skip this factory
 
-                    // If the current factory can still repair more robots
-                    if (cnt < limit[j]) {
-                        long long mini = abs(distance[j] - robot[i]);
-                        long long rec = dp[i + 1][j][cnt + 1];
-                        if (rec != LLONG_MAX) {
-                            op1 = mini + rec;
-                        }
-                    }
-
-                    dp[i][j][cnt] = min(op1, op2);
+                long long currentDistance = 0;
+                for (int cnt = 0; cnt < limit[j] && i + cnt < n; cnt++) {
+                    currentDistance += abs(distance[j] - robot[i + cnt]);
+                    dp[i][j] = min(dp[i][j], currentDistance + dp[i + cnt + 1][j + 1]);
                 }
             }
         }
 
         // The answer is the minimum distance to repair all robots starting from the first robot and first factory
-        return dp[0][0][0];
+        return dp[0][0];
     }
 };
