@@ -28,8 +28,10 @@ public:
         while(!st.empty()) {
             char ch = st.top().first;
             int count = st.top().second;
+            
             res.push_back(ch);
             res.push_back(count + '0');
+
             st.pop();
         }
         reverse(res.begin(),res.end());
