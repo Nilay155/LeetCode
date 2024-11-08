@@ -4,21 +4,12 @@ public:
     int dp[101][201];
 
     int solve(vector<int> &locations,int s,int f,int fuel,int &n) {
-        if(s == f && fuel >= 0) {
-            if(dp[s][fuel] != -1) return dp[s][fuel];
-            long long res = 1;
-            for(int j = 0 ; j < n ; j++) {
-                if(j != s) {
-                    int temp = abs(locations[s]-locations[j]);
-                    res = (res + solve(locations,j,f,fuel - temp,n)) % MOD;
-                }
-            }
-            return dp[s][fuel] = res%MOD;
-        }
         if(fuel < 0) return 0;
         if(dp[s][fuel] != -1) return dp[s][fuel];
-        long long ans = 0;
 
+        long long ans = 0;
+        if(s == f) ans += 1;
+        
         for(int j = 0 ; j < n ; j++) {
             if(j != s) {
                 int temp = abs(locations[s]-locations[j]);
