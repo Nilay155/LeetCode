@@ -28,8 +28,10 @@ public:
 
         int ans = 0;
         int m = temp.size();
+        
         if(n == 0) return ans;
         if(m == 0) return n;
+
         for(int i = 0 ; i < m-1 ; i++) {
             ans = max(ans,temp[i+1]-temp[i]-1);
         }
