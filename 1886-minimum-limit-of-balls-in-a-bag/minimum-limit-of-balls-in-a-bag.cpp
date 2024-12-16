@@ -13,10 +13,10 @@ public:
     }
     int minimumSize(vector<int>& nums, int maxOperations) {
         int n = nums.size();
-        sort(nums.begin(),nums.end());
+        // sort(nums.begin(),nums.end());
 
         int start = 1;
-        int end = nums[n-1];
+        int end = *max_element(nums.begin(), nums.end());;
 
         while(start <= end) {
             int mid = (start + end) >> 1;
