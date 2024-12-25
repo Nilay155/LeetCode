@@ -4,17 +4,18 @@ public:
         int n = tickets.size();
         k = k%n;
 
-        queue<int> q;
-        for(int i = 0 ; i < n ; i++) q.push(i);
         int time = 0;
-        while(!q.empty()) { 
-            int index = q.front();
-            q.pop();
-            tickets[index]--;
-            time += 1;
-            if(tickets[k] == 0) return time;
-            else if(tickets[index] > 0) q.push(index);
+        int temp = 0;
+        for(int i = 0 ; i < n ; i++) {
+            if(tickets[i] < tickets[k]) {
+                time += tickets[i];
+                temp = max(temp,tickets[i]);
+            } else if(tickets[i] >= tickets[k]) {
+                if(i <= k) time += tickets[k];
+                else time += tickets[k]-1;
+            }
         }
-        return -1;
+        return time;
+
     }
 };
