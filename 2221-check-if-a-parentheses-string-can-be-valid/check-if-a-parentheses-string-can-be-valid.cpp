@@ -1,27 +1,37 @@
 class Solution {
 public:
     bool canBeValid(string s, string locked) {
-        int n = s.size();
-        stack<int> open,wildCard;
+        int n = s.length();
+        if (n % 2 != 0) {
+            return false; // Odd length cannot form valid parentheses
+        }
 
-        for(int i = 0 ; i < n ; i++) {
-            if(locked[i] == '0') wildCard.push(i);
-            else if(s[i] == '(') open.push(i);
-            else {
-                if(!open.empty()) open.pop();
-                else if(!wildCard.empty()) wildCard.pop();
-                else return 0;
+        // Left-to-right pass: Ensure there are enough open brackets
+        int openCount = 0;
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '(' || locked[i] == '0') {
+                openCount++;
+            } else { // s[i] == ')' and locked[i] == '1'
+                openCount--;
+            }
+            if (openCount < 0) {
+                return false; // Too many ')' encountered
             }
         }
 
-        while(!wildCard.empty() && !open.empty()) {
-            int top1 = open.top();
-            int top2 = wildCard.top();
-            open.pop();
-            wildCard.pop();
-
-            if(top1 > top2) return 0; 
+        // Right-to-left pass: Ensure there are enough close brackets
+        int closeCount = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            if (s[i] == ')' || locked[i] == '0') {
+                closeCount++;
+            } else { // s[i] == '(' and locked[i] == '1'
+                closeCount--;
+            }
+            if (closeCount < 0) {
+                return false; // Too many '(' encountered
+            }
         }
-        return wildCard.size()%2 == 0 && open.empty();
+
+        return true;
     }
 };
