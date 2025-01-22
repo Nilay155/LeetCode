@@ -1,43 +1,43 @@
 class Solution {
 public:
     vector<vector<int>> highestPeak(vector<vector<int>>& isWater) {
-
-        int n = isWater.size();
-        int m = isWater[0].size();
-
-        vector<vector<int>> ans(n,vector<int>(m,0));
-        vector<vector<bool>> vis(n,vector<bool>(m,false));
-
-        queue<vector<int>> q;
-
-        for(int i = 0 ; i < n ; i++) {
-            for(int j = 0 ; j < m ; j++) {
-                if(isWater[i][j]) {
-                    q.push({i,j,0});
-                    vis[i][j] = true;
+          queue<pair<int,int>>q;
+          vector<vector<bool>>vis(isWater.size(),vector<bool>(isWater[0].size(),false));
+          vector<vector<int>>ans(isWater.size(),vector<int>(isWater[0].size()));
+          for(int i=0;i<isWater.size();i++){
+            for(int j=0;j<isWater[0].size();j++){
+                if(isWater[i][j]==1){
+                    q.push({i,j});
+                    vis[i][j]=1;
+                    ans[i][j]=0;
                 }
             }
-        }
+          }
+    vector<int>x={0,0,1,-1};
+    vector<int>y={-1,1,0,0};
 
-        int dx[] = {-1,0,0,1};
-        int dy[] = {0,1,-1,0};
+    int level=0;
 
-        while(!q.empty()) {
-            auto p = q.front();
-            q.pop();
-            int i = p[0], j = p[1], val = p[2];
-            
-            ans[i][j] = val;
-            for(int k = 0 ; k < 4 ; k++) {
-                int x = i + dx[k];
-                int y = j + dy[k];
-
-                if(x >= 0 && x < n && y >= 0 && y < m && !vis[x][y]) {
-                    q.push({x,y,val+1});
-                    vis[x][y] = true;
+          while(q.size()){
+            int sz=q.size();
+            for(int cnt=1;cnt<=sz;cnt++){
+                int i=q.front().first;
+                int j=q.front().second;
+                q.pop();
+                ans[i][j]=level;
+                for(int p=0;p<4;p++){
+                    int ni=x[p]+i;
+                    int nj=y[p]+j;
+                     if(ni>=0  && ni<isWater.size() && nj>=0 && nj<isWater[0].size()  && vis[ni][nj]==0){
+                   vis[ni][nj]=1;
+                   q.push({ni,nj});
+                     }
                 }
             }
-        }
-        return ans;
+            level++;
+          }
+
+
+          return ans;
     }
 };
