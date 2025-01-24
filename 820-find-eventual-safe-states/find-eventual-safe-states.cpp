@@ -22,7 +22,7 @@ public:
                 q.push(i);
             }
         }
-        cout << q.size() << endl;
+        // cout << q.size() << endl;
         vector<int> ans;
         while(!q.empty()) {
             int top = q.front();
