@@ -1,52 +1,32 @@
 class Solution {
+private:
+    int count[10001];
 public:
-    map<int,int> mpp;
-    int solve(vector<int> &arr,int i,int n,vector<int> &dp) {
-        if(i >= n) return 0;
-        if(dp[i] != -1) return dp[i];
-
-        int notPick = 0 + solve(arr,i+1,n,dp);
-
-        int pick = mpp[arr[i]]*arr[i];
-        if(i+1 < n && arr[i+1]-1 != arr[i]) {
-            pick += solve(arr,i+1,n,dp);
-        } else {
-            pick += solve(arr,i+2,n,dp);
-        }
-
-        return dp[i] = max(pick,notPick);
-    }
     int deleteAndEarn(vector<int>& nums) {
-        int n = nums.size();
+        memset(count,0,sizeof(count));
 
-        for(int i = 0 ; i < n ; i++) {
-            mpp[nums[i]]++;
-        }
+        for(int num : nums) count[num]++;
         vector<int> arr;
-        for(auto& it : mpp) {
-            arr.push_back(it.first);
+        for(int i = 1 ; i < 10001 ; i++) 
+            if(count[i] > 0) 
+                arr.push_back(i);
+        
+        int n = arr.size();
+        vector<int> dp(n,0);
+        
+        dp[0] = arr[0] * count[arr[0]];
+
+        if(n > 1 && arr[0]+1 == arr[1]) dp[1] = arr[1] * count[arr[1]];
+        else if(n > 1) dp[1] = arr[1] * count[arr[1]] + dp[0];
+        if(n > 1) dp[1] = max(dp[1],dp[0]);
+
+        for(int i = 2 ; i < n ; i++) {
+            int prev = arr[i-1];
+            int val = 0;
+            if(prev+1 != arr[i]) val = dp[i-1];
+            dp[i] = max({arr[i] * count[arr[i]] + dp[i-2],arr[i] * count[arr[i]] + val,dp[i-1]});
         }
-        int m = arr.size();
-        // vector<int> dp(m+1,-1);
-        // return solve(arr,0,m,dp);
-
-        vector<int> dp(m,0);
-        dp[0] = mpp[arr[0]]*arr[0];
-
-        for(int i = 1 ; i < m ; i++) {
-
-            int pick = 0;
-            int notPick = 0;
-
-            if(arr[i]-1 != arr[i-1]) {
-                pick = mpp[arr[i]]*arr[i] + dp[i-1];
-                notPick = 0 + dp[i-1];
-            } else {
-                pick = mpp[arr[i]]*arr[i] + ((i >= 2) ? dp[i-2] : 0);
-                notPick = 0 + dp[i-1];
-            }
-            dp[i] = max(pick,notPick);
-        }
-        return dp[m-1];
+        
+        return dp[n-1];
     }
 };
