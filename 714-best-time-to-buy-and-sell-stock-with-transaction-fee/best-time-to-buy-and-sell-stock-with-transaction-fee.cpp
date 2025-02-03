@@ -1,26 +1,17 @@
 class Solution {
 public:
-    int dfs(vector<int> &prices,int i,int flag,int fee,int n,vector<vector<int>> &dp) {
-        if(i >= n) return 0;
-        if(dp[i][flag] != -1) return dp[i][flag];
+    int maxProfit(vector<int>& nums, int fee) {
+        int n = nums.size();
 
-        int buy = 0;
-        int sell = 0;
-
-        if(flag == 0) {
-            buy = max(-prices[i] + dfs(prices,i+1,1,fee,n,dp),0 + dfs(prices,i+1,flag,fee,n,dp));
-        } else {
-            sell = max(prices[i]-fee + dfs(prices,i+1,0,fee,n,dp),0 + dfs(prices,i+1,flag,fee,n,dp));
-        } 
-        return dp[i][flag] = max(buy,sell);
-    }
-    int maxProfit(vector<int>& prices, int fee) {
-        int n = prices.size();
-        int i = 0;
-        int flag = 0;
-
-        vector<vector<int>> dp(n,vector<int>(2,-1));
-
-        return dfs(prices,i,flag,fee,n,dp);
+        vector<vector<int>> dp(n+1,vector<int>(2));
+        dp[0][0] = -nums[0]; // Buying
+        for(int i = 1 ; i < n ; i++) {
+            
+            // Buying Case
+            dp[i][0] = max(dp[i-1][0],-nums[i] + dp[i-1][1]);
+            // Selling Case
+            dp[i][1] = max(nums[i]-fee+dp[i-1][0],dp[i-1][1]);
+        }
+        return max(dp[n-1][0],dp[n-1][1]);
     }
 };
