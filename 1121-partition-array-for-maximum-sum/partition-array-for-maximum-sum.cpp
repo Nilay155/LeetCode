@@ -26,9 +26,11 @@ public:
         vector<int> dp(n+1,0);
         for(int i = n-1 ; i >= 0 ; i--) {
             int temp = 0;
+            int maxi = -1e9;
             for(int j = i ; j < n ; j++) {
                 if(j-i+1 <= k) {
-                    temp = max(temp,maxVal(arr,i,j)*(j-i+1) + dp[j+1]);
+                    maxi = max(maxi,arr[j]);
+                    temp = max(temp,maxi*(j-i+1) + dp[j+1]);
                 }
             }
             dp[i] = temp;
