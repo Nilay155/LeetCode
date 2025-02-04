@@ -17,7 +17,7 @@ public:
         return cache[n][i] = ans%MOD;
     }
     int func(int n) {
-        vector<int> curr(10,1);
+        vector<int> curr(10,1); // n = 1
 
         for(int i = 2 ; i <= n ; i++) {
             vector<int> next(10,0);
@@ -25,7 +25,7 @@ public:
                 int temp = 0;
                 for(int k = 0 ; k < 10 ; k++) {
                     if(dp[j][k]) {
-                        temp = (temp + curr[j])%MOD;
+                        temp = (temp + curr[k])%MOD;
                     }
                 }
                 next[j] = temp%MOD;
@@ -36,7 +36,7 @@ public:
         for(int i = 0 ; i < 10 ; i++) {
             ans = (ans + curr[i]) % MOD;
         }
-        return ans%MOD;
+        return ans;
     }
     int knightDialer(int n) {
         dp = vector<vector<int>>(10,vector<int>(10,0));
@@ -50,7 +50,7 @@ public:
         dp[7][2] = dp[7][6] = 1;
         dp[8][1] = dp[8][3] = 1;
         dp[9][2] = dp[9][4] = 1;
-        return solve(n,0);
+        // return solve(n,0);
         return func(n);
     }
 };
