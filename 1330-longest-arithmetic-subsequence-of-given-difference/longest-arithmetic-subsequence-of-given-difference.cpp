@@ -1,16 +1,23 @@
 class Solution {
 public:
-    int longestSubsequence(vector<int>& arr, int difference) {
-        int n = arr.size();
-        map<int,int> mpp;
-        int ans = 1;
-        for(int i = 0; i < n ; i++) {
+    int longestSubsequence(vector<int>& nums, int diff) {
+        int n = nums.size();
 
-            if(mpp.find(arr[i]-difference) != mpp.end()) {
-                ans = max(ans,1 + mpp[arr[i]-difference]);
+        vector<int> dp(2e5,0);
+
+        for(int i = 0 ; i < n ; i++) {
+            int ele = nums[i] + 100000;
+            int val = (ele - diff);
+
+            if(dp[val]) {
+                dp[ele] = 1 + dp[val];
+            } else {
+                dp[ele] = 1;
             }
-            mpp[arr[i]] = mpp[arr[i]-difference] + 1;
-        }   
+        }
+        
+        int ans = 0;
+        for(int i = 0 ; i < dp.size() ; i++) ans = max(ans,dp[i]);
         return ans;
     }
 };
