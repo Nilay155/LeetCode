@@ -16,6 +16,28 @@ public:
         }
         return cache[n][i] = ans%MOD;
     }
+    int func(int n) {
+        vector<int> curr(10,1);
+
+        for(int i = 2 ; i <= n ; i++) {
+            vector<int> next(10,0);
+            for(int j = 0 ; j < 10 ; j++) {
+                int temp = 0;
+                for(int k = 0 ; k < 10 ; k++) {
+                    if(dp[j][k]) {
+                        temp = (temp + curr[j])%MOD;
+                    }
+                }
+                next[j] = temp%MOD;
+            }
+            curr = next;
+        }
+        int ans = 0;
+        for(int i = 0 ; i < 10 ; i++) {
+            ans = (ans + curr[i]) % MOD;
+        }
+        return ans%MOD;
+    }
     int knightDialer(int n) {
         dp = vector<vector<int>>(10,vector<int>(10,0));
         cache = vector<vector<int>>(n+1,vector<int>(11,-1));
@@ -29,5 +51,6 @@ public:
         dp[8][1] = dp[8][3] = 1;
         dp[9][2] = dp[9][4] = 1;
         return solve(n,0);
+        return func(n);
     }
 };
