@@ -1,5 +1,10 @@
 class Solution {
 public:
+    Solution() {
+        std::ios_base::sync_with_stdio(false);
+        std::cin.tie(NULL);
+        std::cout.tie(NULL);
+    }
     int minHeightShelves(vector<vector<int>>& books, int shelfWidth) {
         int n = books.size();
         // books[i] -> thickness, height
