@@ -1,36 +1,26 @@
 class Solution {
 public:
-    int func(vector<vector<int>> &books,int shelfWidth,int i,int n,vector<int> &dp) {
-
-        if(i >= n) return 0;
-        if(dp[i] != -1) return dp[i];
-
-        int minHeight = 1e9;
-        int width = 0;
-        int maxHeightShelf = 0;
-        
-        for(int j = i ; j < n ; j++) {
-            
-            int height = books[j][1];
-            int thickness = books[j][0];
-            
-            width += thickness;
-            maxHeightShelf = max(maxHeightShelf,height);
-
-            if(width <= shelfWidth) {
-                int recursion = maxHeightShelf + func(books,shelfWidth,j+1,n,dp);
-                minHeight = min(minHeight,recursion);
-            } 
-        }
-        return dp[i] = minHeight;
-    }
     int minHeightShelves(vector<vector<int>>& books, int shelfWidth) {
         int n = books.size();
-        int m = books[0].size();
+        // books[i] -> thickness, height
+        // books placing such that sum(width) <= shelfWidth
 
-        int i = 0;
-        vector<int> dp(n,-1);
+        // dp[i] -> minimum height to get to the i-th index
+        vector<int> dp(n+1,1e9);
+        dp[0] = 0;
 
-        return func(books,shelfWidth,i,n,dp);
-    }
+        for(int i = 1 ; i <= n ; i++) {
+            int width = 0;
+            int height = 0;
+            for(int j = i ; j >= 1 ; j--) {
+                width += books[j-1][0];
+                height = max(books[j-1][1],height);
+
+                if(width <= shelfWidth) {
+                    dp[i] = min(dp[i],height + dp[j-1]);
+                }
+            }
+        }
+        return dp[n];
+    }   
 };
