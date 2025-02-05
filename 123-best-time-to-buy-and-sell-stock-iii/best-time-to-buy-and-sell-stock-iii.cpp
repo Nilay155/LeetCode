@@ -44,32 +44,21 @@ public:
             }
         }
 
-        // for(int i = 0 ; i <= n ; i++) {
-        //     for(int j = 0 ; j < 2 ; j++) {
-        //         for(int k = 0 ; k < 3 ; k++) {
-
-        //             cout << dp[i][j][k] << "   ";
-        //         }cout << endl;
-        //     }cout << endl;
-        // }
         return dp[0][1][2];
     }
     int maxProfit(vector<int>& prices) {
-        // int n = prices.size();
-        // int i = 0, capacity = 2;
-        // bool flag = true;
-        // vector<vector<vector<int>>> dp(n,vector<vector<int>> (2,vector<int>(3,-1)));
+        int n = prices.size();
+        vector<vector<vector<int>>> dp(n,vector<vector<int>>(2,vector<int>(3,0)));
+        dp[0][0][1] = -prices[0];
+        dp[0][0][2] = -prices[0];
 
+        for(int i = 1 ; i < n ; i++) {
+            dp[i][0][1] = max(dp[i-1][0][1],-prices[i] + dp[i-1][1][0]);
+            dp[i][0][2] = max(dp[i-1][0][2],-prices[i] + dp[i-1][1][1]);
 
-        // int res = dfs(prices,i,capacity,flag,n,dp);
-        //  for(int i = 0 ; i < n ; i++) {
-        //     for(int j = 0; j < 2 ; j++) {
-        //         for(int k = 0 ; k < 3 ; k++) {
-        //             cout << dp[i][j][k] << "  ";
-        //         }cout << endl;
-        //     } cout << endl;
-        // }
-        // return res;
-        return tabulation(prices);
+            dp[i][1][1] = max(dp[i-1][1][1],prices[i] + dp[i-1][0][1]);
+            dp[i][1][2] = max(dp[i-1][1][2],prices[i] + dp[i-1][0][2]);
+        }
+        return dp[n-1][1][2];
     }
 };
