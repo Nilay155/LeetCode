@@ -60,13 +60,10 @@ public:
         }
         vector<string> res;
         for(auto& it : map) {
-            cout << it.first << endl;
             for(int j = 0 ; j < it.second.size(); j++) {
-                cout << it.second[j] << "  ";
                 res.push_back(it.second[j]);
-            }cout << endl << endl;
+            }
         }
-        // reverse(res.begin(),res.end());
         return res;
     }
 };
