@@ -7,8 +7,7 @@ var once = function(fn) {
     return function(...args){
         if(calls) {
             calls = false; 
-            const result = fn(...args);
-            return result;
+            return fn(...args);
         } else {
             return undefined;
         }
