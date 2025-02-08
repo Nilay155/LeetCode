@@ -8,7 +8,7 @@ public:
     int dfs(vector<vector<int>> &matrix,int x,int y,vector<vector<int>> &vis,int prev,int &n,int &m) {
         
         if(cache[x][y] != -1) return cache[x][y];
-        vis[x][y] = 1;
+        // vis[x][y] = 1;
 
         int dx[] = {-1,1,0,0};
         int dy[] = {0,0,1,-1};
@@ -23,7 +23,7 @@ public:
                 ans = max(ans,temp);
             }
         }
-        vis[x][y] = 0;
+        // vis[x][y] = 0;
         return cache[x][y] = ans;
     }
     int longestIncreasingPath(vector<vector<int>>& matrix) {
