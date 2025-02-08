@@ -1,69 +1,43 @@
 class Solution {
 public:
-    int solve(vector<vector<int>> &matrix,int i,int j,int &n,int &m,int move,
-                vector<vector<vector<int>>> &dp) {
-
-                        if(i < 0 || j < 0 || i >= n || j >= m) return 0;
-                        if(dp[i][j][move] != -1) return dp[i][j][move];
-
-                        int right = 0;
-                        int left = 0;
-                        int top = 0;
-                        int bottom = 0;
-
-                        if(move == 4) {
-                            //Starting Point
-                            right = 1 + solve(matrix,i,j+1,n,m,0,dp);
-                            left = 1 + solve(matrix,i,j-1,n,m,1,dp);
-                            top = 1 + solve(matrix,i-1,j,n,m,2,dp);
-                            bottom = 1 + solve(matrix,i+1,j,n,m,3,dp);
-                        } else {
-                            int x = -1;
-                            int y = -1;
-
-                            if(move == 0) {
-                                x = i;
-                                y = j-1;
-                            } else if(move == 1) {
-                                x = i;
-                                y = j+1;
-                            } else if(move == 2) {
-                                x = i+1,
-                                y = j;
-                            } else {
-                                x = i-1;
-                                y = j;
-                            }
-                            if(x < 0 || y < 0 || x >= n || y >= m);
-                            else if(matrix[i][j] > matrix[x][y]) {
-                                right = 1 + solve(matrix,i,j+1,n,m,0,dp);
-                                left = 1 + solve(matrix,i,j-1,n,m,1,dp);
-                                top = 1 + solve(matrix,i-1,j,n,m,2,dp);
-                                bottom = 1 + solve(matrix,i+1,j,n,m,3,dp);
-                            }
-                        }
-
-                        return dp[i][j][move] = max({right,left,top,bottom});
-                }
-    int longestIncreasingPath(vector<vector<int>>& matrix) {
-        ios_base::sync_with_stdio(0);
-        cin.tie(0);
-        cout.tie(0);
+    vector<vector<int>> cache;
+    bool check(int x,int y,int n,int m) {
+        if(x >= 0 && x < n && y >= 0 && y < m) return true;
+        else return false;
+    }
+    int dfs(vector<vector<int>> &matrix,int x,int y,vector<vector<int>> &vis,int prev,int &n,int &m) {
         
-        int n = matrix.size();
-        int m = matrix[0].size();
+        if(cache[x][y] != -1) return cache[x][y];
+        vis[x][y] = 1;
 
-        int ans = INT_MIN;
-        vector<vector<vector<int>>> dp(n+1,vector<vector<int>>(m+1,vector<int>(5,-1)));
-        
-        for(int i = 0 ; i < n ; i++) {
-            for(int j = 0 ; j < m ; j++) {
-                for(int move = 0 ; move <= 4 ; move++) {
-                    if(dp[i][j][move] == -1)
-                        ans = max(ans,solve(matrix,i,j,n,m,4,dp));
-                }
+        int dx[] = {-1,1,0,0};
+        int dy[] = {0,0,1,-1};
+
+        int ans = 1;
+        for(int i = 0 ; i < 4 ; i++) {
+            int newX = x + dx[i];
+            int newY = y + dy[i];
+
+            if(check(newX,newY,n,m) && !vis[newX][newY] && prev < matrix[newX][newY]) {
+                int temp = 1 + dfs(matrix,newX,newY,vis,matrix[newX][newY],n,m);
+                ans = max(ans,temp);
             }
         }
-        return ans;
+        vis[x][y] = 0;
+        return cache[x][y] = ans;
+    }
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        int m = matrix[0].size();
+        int res = 0;
+        vector<vector<int>> vis(n,vector<int>(m,0));
+        cache = vector<vector<int>> (n,vector<int>(m,-1));
+
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                res = max(res,dfs(matrix,i,j,vis,matrix[i][j],n,m));
+            }
+        }
+        return res;
     }
 };
