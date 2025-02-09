@@ -13,6 +13,9 @@ public:
         return res;
     }
     int removeStones(vector<vector<int>>& stones) {
+                std::ios_base::sync_with_stdio(false);
+        std::cin.tie(NULL);
+        std::cout.tie(NULL);
         int n = stones.size();
         vector<vector<int>> adjList(n);
 
