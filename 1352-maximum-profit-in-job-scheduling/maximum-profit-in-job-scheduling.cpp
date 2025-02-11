@@ -29,7 +29,7 @@ public:
                 itr = mpp.end();  // No key ≤ start exists
             }
             mpp[end] = max(mpp[end],value + itr->second);
-            cout << itr -> first << " " << start << endl;
+            // cout << itr -> first << " " << start << endl;
 
             itr = mpp.lower_bound(end);
             if(itr != mpp.begin()) {
