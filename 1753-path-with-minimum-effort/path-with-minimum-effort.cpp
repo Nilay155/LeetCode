@@ -25,7 +25,7 @@ public:
             int x = temp.second.first;
             int y = temp.second.second;
 
-            if(x == n-1 && y== m-1) ans = min(ans,maxDiff);
+            if(x == n-1 && y== m-1) return maxDiff;
 
             if(vis[x][y]) continue;
             vis[x][y] = true;
