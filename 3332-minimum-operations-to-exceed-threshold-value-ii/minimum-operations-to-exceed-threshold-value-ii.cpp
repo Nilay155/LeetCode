@@ -1,13 +1,15 @@
 typedef long long ll;
 class Solution {
 public:
+Solution() {
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(NULL);
+  std::cout.tie(NULL);
+}
     int minOperations(vector<int>& nums, int k) {
         int n = nums.size();
 
-        priority_queue<ll,vector<ll>,greater<ll>> pq;
-        for(int i = 0 ; i < n ; i++) {
-            pq.push(nums[i]);
-        }
+   priority_queue<ll,vector<ll>, greater<ll>> pq(nums.begin(), nums.end());
 
         int res = 0;
 
