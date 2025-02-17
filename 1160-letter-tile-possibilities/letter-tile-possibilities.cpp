@@ -17,8 +17,8 @@ public:
         int n = tiles.size();
         vector<bool> vis(n,false);
         solve(tiles,vis,"",n);
-        for(auto& it : s) cout << it << "  " ;
-        cout << endl;
+        // for(auto& it : s) cout << it << "  " ;
+        // cout << endl;
         return s.size();
     }
 };
