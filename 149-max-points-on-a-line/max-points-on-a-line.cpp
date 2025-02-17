@@ -8,7 +8,7 @@ public:
     int maxPoints(vector<vector<int>>& points) {
         int n = points.size();
         sort(points.begin(),points.end());
-        unordered_map<int,unordered_map<double,int>> mpp;
+        vector<unordered_map<double,int>> dp(n);
 
         for(int i = 0 ; i < n ; i++) {
             int x1 = points[i][0];
@@ -19,13 +19,13 @@ public:
                 int y2 = points[j][1];
 
                 double m = computeSlope(x1,y1,x2,y2);
-                mpp[j][m] = 1 + mpp[i][m];
+                dp[j][m] = 1 + dp[i][m]; 
             }
         }
 
         int ans = 0;
-        for(auto& temp : mpp) {
-            for(auto& it : temp.second) {
+        for(auto& temp : dp) {
+            for(auto& it : temp) {
                 ans = max(ans,it.second);
             }
         }
