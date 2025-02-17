@@ -1,24 +1,25 @@
 class Solution {
 private:
-    unordered_set<string> s;
-    void solve(string &tiles,vector<bool> &vis,string temp,int &n) {
+    int solve(string &tiles,vector<bool> &vis,string &temp,int &n,vector<int> &count) {
+        
+        int ans = 0;
+        for(int i = 0 ; i < 26 ; i++) {
 
-        for(int i = 0 ; i < n ; i++) {
-            if(!vis[i]) {
-                vis[i] = true;
-                s.insert(temp+tiles[i]);
-                solve(tiles,vis,temp+tiles[i],n);
-                vis[i] = false;
+            if(count[i]) {
+                count[i]--;
+                ans += 1 + solve(tiles,vis,temp,n,count);
+                count[i]++;
             }
         }
+        return ans;
     }
 public:
     int numTilePossibilities(string tiles) {
         int n = tiles.size();
         vector<bool> vis(n,false);
-        solve(tiles,vis,"",n);
-        // for(auto& it : s) cout << it << "  " ;
-        // cout << endl;
-        return s.size();
+        vector<int> count(26,0);
+        string temp;
+        for(int i = 0 ; i < n ; i++) count[tiles[i]-'A']++;
+        return solve(tiles,vis,temp,n,count);
     }
 };
