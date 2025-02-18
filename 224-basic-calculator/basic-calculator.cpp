@@ -9,6 +9,11 @@ private:
     }
 
 public:
+    Solution() {
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(NULL);
+  std::cout.tie(NULL);
+}
     int calculate(string s) {
         s = removeSpaces(s);
         int n = s.size();
