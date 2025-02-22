@@ -61,7 +61,6 @@ private:
 public:
     TreeNode* recoverFromPreorder(string traversal) {
         int n = traversal.size();
-        unordered_map<int,vector<int>> left,right,map;
         vector<pair<int,int>> arr;
         int i = 0;
 
@@ -70,16 +69,10 @@ public:
 
         while(i < n) {
             parent = node(traversal,i,n);
-            map[d].push_back(parent);
             arr.push_back({parent,d});
             d = depth(traversal,i,n);
         }
-        TreeNode* root = new TreeNode(map[0][0]);
-        // reverse(arr.begin(),arr.end());
-        for(int i = 0 ; i < arr.size() ; i++) {
-            // cout << arr[i].first << "  " << arr[i].second << endl;
-        } 
-        // arr.pop_back();
+        TreeNode* root = new TreeNode(arr[0].first);
         int x = 1;
         recover(root,arr,1,x);
         return root;
