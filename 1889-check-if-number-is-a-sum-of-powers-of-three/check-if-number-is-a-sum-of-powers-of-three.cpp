@@ -13,6 +13,11 @@ private:
     }
 public:
     bool checkPowersOfThree(int n) {
-        return solve(n,0,0);
+        // return solve(n,0,0);
+        while(n) {
+            if(n%3 == 2) return 0;
+            n /= 3;
+        }
+        return 1;
     }
 };
