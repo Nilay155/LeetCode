@@ -32,16 +32,14 @@ public:
         }
         int p1 = -1, p2 = -1;
         int mini = INT_MAX;
-
-        for(int i = 0 ; i < arr.size() ; i++) {
+        int n = arr.size();
+        for(int i = 0 ; i < n-1 ; i++) {
             int ele = arr[i];
-            auto it = upper_bound(arr.begin(), arr.end(), ele);
-            if(it != arr.end()) {
-                int temp = *it - ele;
-                if(temp < mini) {
-                    p1 = ele, p2 = *it;
-                    mini = temp;
-                }
+            int val = arr[i+1];
+            int temp = val - ele;
+            if(temp < mini) {
+                p1 = ele, p2 = val;
+                mini = temp;
             }
         }
         return {p1,p2};
