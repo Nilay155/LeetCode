@@ -1,5 +1,10 @@
 class Solution {
-
+public:
+    Solution() {
+ std::ios_base::sync_with_stdio(false);
+  std::cin.tie(NULL);
+  std::cout.tie(NULL);
+}
 public:
     string generateString(string str1, string str2) {
         int n = str1.length();
