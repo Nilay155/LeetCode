@@ -1,16 +1,14 @@
 class Solution {
 public:
     int numberOfSubstrings(string s) {
-        int n = s.size();
+        int n = s.length();
         int res = 0;
 
         int a = -1;
         int b = -1;
         int c = -1;
-        bool flag = true;
 
         int j = 0;
-        
         while(j < n) {
 
             if(s[j] == 'a') {
