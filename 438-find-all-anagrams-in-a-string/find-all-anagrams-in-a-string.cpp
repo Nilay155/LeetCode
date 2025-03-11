@@ -1,5 +1,10 @@
 class Solution {
 public:
+    Solution() {
+ std::ios_base::sync_with_stdio(false);
+  std::cin.tie(NULL);
+  std::cout.tie(NULL);
+}
     vector<int> findAnagrams(string s, string p) {
         int n = s.length(), k = p.length();
         unordered_map<char,int> patt,text;
