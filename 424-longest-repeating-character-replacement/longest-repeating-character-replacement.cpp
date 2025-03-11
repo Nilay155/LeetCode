@@ -9,7 +9,7 @@ public:
             count[s[r]-'A'] += 1;
             maxi = max(maxi,count[s[r]-'A']);
 
-            while((r-l+1)-maxi > k) {
+            if((r-l+1)-maxi > k) {
                 count[s[l]-'A'] -= 1;
                 l += 1;
             }
