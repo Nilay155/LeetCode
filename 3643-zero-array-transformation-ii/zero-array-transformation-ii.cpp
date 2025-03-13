@@ -22,9 +22,10 @@ public:
                 if (right >= index) {
                     differenceArray[max(left,index)] += val;
                     differenceArray[right + 1] -= val;
-                }
+                } 
             }
             // Update prefix sum at current index
+            if(index >= 1) differenceArray[index-1] = 1e9;
             sum += differenceArray[index];
         }
         return k;
