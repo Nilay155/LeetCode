@@ -32,9 +32,11 @@ public:
         for(int i = 0 ; i < n ; i++) {
             if(nums[i] > 0) {
                 flag = true;
+                break;
             }
         }
         if(!flag) return 0;
+        
         while(low <= high) {
             int mid = (low + high) >> 1;
 
