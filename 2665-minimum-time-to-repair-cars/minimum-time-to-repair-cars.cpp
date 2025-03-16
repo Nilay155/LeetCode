@@ -2,7 +2,6 @@ typedef long long ll;
 class Solution {
 private:
     bool check(vector<int> &ranks,int cars,long long mid) {
-        // cout << mid << endl;
         int n = ranks.size();
 
         long long count = 0;
