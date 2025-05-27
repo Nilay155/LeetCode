@@ -7,7 +7,7 @@ public:
 
         while(s <= e) {
             int mid = (s + e) >> 1;
-            cout << s << " " << e << " " << mid << endl;
+            // cout << s << " " << e << " " << mid << endl;
             if(nums[mid] == x) return mid;
 
             if(nums[mid] >= nums[s]) {
