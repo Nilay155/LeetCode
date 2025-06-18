@@ -1,25 +1,22 @@
 class Solution {
-private:
-    void solve(vector<int> &nums,vector<int> &arr,vector<vector<int>> &ans,int i,int n) {
-
-        if(i >= n) {
-            ans.push_back(arr);
-            return;
-        }
-
-        solve(nums,arr,ans,i+1,n);
-
-        arr.push_back(nums[i]);
-        solve(nums,arr,ans,i+1,n);
-        arr.pop_back();
-
-    }
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
-        vector<vector<int>> ans;
-        vector<int> arr;
         int n = nums.size();
-        solve(nums,arr,ans,0,n);
+        int subsets = pow(2,n)-1; 
+        vector<vector<int>> ans;
+        for(int k = 0 ; k <= subsets ; k++) {
+            int num = k, z = n-1;
+            vector<int> dp(n,0);
+            while(num) {
+                dp[z--] = num%2;
+                num /= 2;
+            }
+            vector<int> temp;
+            for(int i = 0 ; i < n ; i++) {
+                if(dp[i]) temp.push_back(nums[i]);
+            }
+            ans.push_back(temp);
+        }
         return ans;
     }
 };
