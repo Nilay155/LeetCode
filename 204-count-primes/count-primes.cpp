@@ -4,9 +4,9 @@ public:
     Seive(int n) {
         seive.resize(n+1,true);
         seive[0] = seive[1] = false;
-        for(int i = 2 ; i <= n ; i++) {
+        for(int i = 2 ; i <= sqrt(n) ; i++) {
             if(!seive[i]) continue;
-            for(long long j = 1LL*i*i ; j <= n ; j += i) {
+            for(long long j = i+i ; j <= n ; j += i) {
                 seive[j] = false;
             }
         }
