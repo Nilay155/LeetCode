@@ -8,30 +8,37 @@ private:
     //     }
     //     return -1;
     // }
-    int func2(vector<int> &nums) {
-        int ans = 0;
-        for(int bitIndex = 0 ; bitIndex < 32 ; bitIndex++) {
-            int count = 0;
-            for(int num : nums) {
-                if(num & (1 << bitIndex)) {
-                    count += 1;
-                }
-            }
-            if(count%3 == 1) {
-                ans = ans | (1 << bitIndex);
-            }
-        }
-        return ans;
-    }
-    // int func3(vector<int> &nums) {
+    // int func2(vector<int> &nums) {
+    //     int ans = 0;
+    //     for(int bitIndex = 0 ; bitIndex < 32 ; bitIndex++) {
+    //         int count = 0;
+    //         for(int num : nums) {
+    //             if(num & (1 << bitIndex)) {
+    //                 count += 1;
+    //             }
+    //         }
+    //         if(count%3 == 1) {
+    //             ans = ans | (1 << bitIndex);
+    //         }
+    //     }
+    //     return ans;
     // }
+    int func3(vector<int> &nums) {
+
+        sort(nums.begin(),nums.end());
+        
+        for(int k = 1 ; k < nums.size() ; k += 3) {
+            if(nums[k] != nums[k-1]) return nums[k-1];
+        }
+        return nums[nums.size()-1];
+    }
     // int func4(vector<int> &nums) {
     // }
 public:
     int singleNumber(vector<int>& nums) {
         // return func1(nums);
-        return func2(nums);
-        // return func3(nums);
+        // return func2(nums);
+        return func3(nums);
         // return func4(nums);
     }
 };
