@@ -23,22 +23,30 @@ private:
     //     }
     //     return ans;
     // }
-    int func3(vector<int> &nums) {
+    // int func3(vector<int> &nums) {
 
-        sort(nums.begin(),nums.end());
+    //     sort(nums.begin(),nums.end());
         
-        for(int k = 1 ; k < nums.size() ; k += 3) {
-            if(nums[k] != nums[k-1]) return nums[k-1];
-        }
-        return nums[nums.size()-1];
-    }
-    // int func4(vector<int> &nums) {
+    //     for(int k = 1 ; k < nums.size() ; k += 3) {
+    //         if(nums[k] != nums[k-1]) return nums[k-1];
+    //     }
+    //     return nums[nums.size()-1];
     // }
+    int func4(vector<int> &nums) {
+        // count of buckets
+        int ones = 0, twos = 0;
+
+        for(int num : nums) {
+            ones = (ones ^ num) & (~twos);
+            twos = (twos ^ num) & (~ones);
+        }
+        return ones;
+    }
 public:
     int singleNumber(vector<int>& nums) {
         // return func1(nums);
         // return func2(nums);
-        return func3(nums);
-        // return func4(nums);
+        // return func3(nums);
+        return func4(nums);
     }
 };
