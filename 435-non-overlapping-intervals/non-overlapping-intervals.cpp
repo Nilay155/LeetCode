@@ -3,10 +3,6 @@ public:
     int eraseOverlapIntervals(vector<vector<int>>& intervals) {
         int n = intervals.size();
         sort(intervals.begin(),intervals.end());
-        for(auto interval : intervals) {
-            cout << interval[0] << " : " << interval[1] << endl;
-        }
-
         int res = 0, count = 0;
         int start = intervals[0][0], end = intervals[0][1];
 
