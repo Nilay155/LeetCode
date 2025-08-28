@@ -1,86 +1,127 @@
-struct Cache {
-    unordered_set<int> s;
-    queue<int> q;
+class Node {
+public:
+    int key, val;
+    Node* prev;
+    Node* next;
+
+    Node(int k, int v) {
+        key = k;
+        val = v;
+        prev = next = nullptr;
+    }
 };
+
+class LRUCache {
+public:
+    unordered_map<int, Node*> keyNode;
+    Node* head;
+    Node* tail;
+
+    LRUCache() {
+        head = new Node(-1, -1);
+        tail = new Node(-1, -1);
+        head->next = tail;
+        tail->prev = head;
+    }
+
+    void remove(int key) {
+        Node* curr = keyNode[key];
+        keyNode.erase(curr->key);
+
+        curr->prev->next = curr->next;
+        curr->next->prev = curr->prev;
+        delete curr;
+    }
+
+    void add(int key, int value) {
+        Node* curr = new Node(key, value);
+        keyNode[key] = curr;
+
+        Node* node = tail->prev;
+        node->next = curr;
+        curr->prev = node;
+        curr->next = tail;
+        tail->prev = curr;
+    }
+
+    int removeHead() {
+        Node* node = head->next;
+        if (node == tail) return -1; // empty
+
+        keyNode.erase(node->key);
+
+        head->next = node->next;
+        node->next->prev = head;
+
+        int k = node->key;
+        delete node;
+        return k;
+    }
+
+    bool empty() {
+        return head->next == tail;
+    }
+};
+
 class LFUCache {
 private:
-    unordered_map<int,int> keyValue;
-    unordered_map<int,Cache> freq;
-    unordered_map<int,int> keyFreq;
-    int size;
-    int minFreq;
+    unordered_map<int, int> keyLevel;       // key -> freq
+    unordered_map<int, LRUCache*> lvlCache; // freq -> LRUCache
+    unordered_map<int, int> keyValue;       // key -> value
+    int capacity;
+    int lfu;
+
 public:
-    LFUCache(int capacity) {
-        size = capacity;
-        minFreq = 0;
+    LFUCache(int cap) {
+        capacity = cap;
+        lfu = 0;
     }
-    
+
     int get(int key) {
-        if(keyValue.find(key) != keyValue.end()) {
-            int currFreq = keyFreq[key];
+        if (keyValue.find(key) == keyValue.end()) return -1;
 
-            freq[currFreq].s.erase(key);
-            if(freq[currFreq].s.size() == 0 && currFreq == minFreq) minFreq = currFreq + 1;
-            freq[currFreq+1].s.insert(key);
-            freq[currFreq+1].q.push(key);
+        int val = keyValue[key];
+        int currLvl = keyLevel[key];
+        int newLvl = currLvl + 1;
 
-            keyFreq[key] = currFreq+1;
+        lvlCache[currLvl]->remove(key);
+        if (lvlCache[currLvl]->empty() && lfu == currLvl)
+            lfu++;
 
-            return keyValue[key];
-        } else {
-            return -1;
-        }
+        if (lvlCache.find(newLvl) == lvlCache.end())
+            lvlCache[newLvl] = new LRUCache();
+
+        lvlCache[newLvl]->add(key, val);
+        keyLevel[key] = newLvl;
+
+        return val;
     }
-    
+
     void put(int key, int value) {
-        // Deletion
-        if(keyValue.size() >= size && keyValue.find(key) == keyValue.end()) {
-            // new-insertion
+        if (capacity == 0) return;
 
-            while(!freq[minFreq].q.empty() && 
-            !freq[minFreq].s.count(freq[minFreq].q.front())) {
-                freq[minFreq].q.pop();
-            }
-            int element = freq[minFreq].q.front();
-            freq[minFreq].q.pop();
-            freq[minFreq].s.erase(element);
-            keyValue.erase(element);
-            keyFreq.erase(element);
-
-            keyValue.insert({key,value});
-            keyFreq.insert({key,1});
-            freq[keyFreq[key]].s.insert(key);
-            freq[keyFreq[key]].q.push(key);
-            
-            minFreq = 1;
+        // key already exists
+        if (keyValue.find(key) != keyValue.end()) {
+            keyValue[key] = value;
+            get(key); // bump frequency
             return;
         }
-        // insertion
-        if(keyValue.find(key) == keyValue.end()) {
-            keyValue.insert({key,value});
-            keyFreq.insert({key,1});
-            freq[keyFreq[key]].s.insert(key);
-            freq[keyFreq[key]].q.push(key);
 
-            minFreq = 1;
-        } 
-        // updation
-        else {
-            keyValue[key] = value;
-            int currFreq = keyFreq[key];
-
-            freq[currFreq].s.erase(key);
-            if(freq[currFreq].s.size() == 0 && currFreq == minFreq) minFreq = currFreq + 1;
-            freq[currFreq+1].s.insert(key);
-            freq[currFreq+1].q.push(key);
-            keyFreq[key] = currFreq+1;
+        // need to evict
+        if (keyValue.size() >= capacity) {
+            int deletedKey = lvlCache[lfu]->removeHead();
+            keyValue.erase(deletedKey);
+            keyLevel.erase(deletedKey);
         }
+
+        // new key always goes to freq=1
+        keyValue[key] = value;
+        keyLevel[key] = 1;
+        lfu = 1;
+
+        if (lvlCache.find(1) == lvlCache.end())
+            lvlCache[1] = new LRUCache();
+
+        lvlCache[1]->add(key, value);
     }
 };
-
-/**
- * Your LFUCache object will be instantiated and called as such:
- * LFUCache* obj = new LFUCache(capacity);
- * int param_1 = obj->get(key);
- * obj->put(key,value);
- */
