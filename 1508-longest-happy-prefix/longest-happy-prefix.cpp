@@ -2,8 +2,6 @@ class Solution {
 public:
     string longestPrefix(string s) {
         int n = s.length();
-        string r = s;
-        reverse(r.begin(),r.end());
 
         long long f = 0, b = 0, d = 29, mod = 1e9 + 7, p = 1;
         int last = -1;
