@@ -38,6 +38,22 @@ private:
         return -1;
     }
     int rabinKarp(string text,string patt) {
+        int n = text.length(), m = patt.length();
+        int h = 1, t = 0, p = 0, d = 31, mod = 1e9 + 7;
+        
+        for(int k = 0 ; k < m-1 ; k++) h = (h*10) % mod;
+        
+        int i = 0;
+        for(i = 0 ; i < m ; i++) {
+            t = (t + (d * text[i]-'a')) % mod;
+            p = (p + (d * patt[i]-'a')) % mod;
+        }
+
+        if(t == p) return 0;
+        for(int j = i ; j < n ; j++) {
+            t = (t - (h * text[j-m]-'a') + d * text[j]-'a') % mod;
+            if(t == p) return j-m;
+        }
         return -1;
     }
 public:
