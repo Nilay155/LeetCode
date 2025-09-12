@@ -5,27 +5,20 @@ public:
 
         int totalSum = 0;
         for(int num : nums) totalSum += num;
-        
-        if(totalSum%2 == 1) return false;
-        
-        int halfSum = (totalSum/2) + 1;
-        vector<bool> dp(halfSum,false);
-        dp[0] = true;
 
-        for(int i = 0 ; i < n ; i++) {
-            vector<bool> next(halfSum,false);
+        if(totalSum & 1) return false;
+        int halfSum = totalSum / 2;
 
-            for(int j = 1 ; j < halfSum ; j++) {
-                if(nums[i] <= j) {
-                    next[j] = next[j] | dp[j-nums[i]];
-                }
+        vector<vector<bool>> dp(n+1,vector<bool>(halfSum+1));
+
+        for(int i = 0 ; i <= n ; i++) dp[i][0] = true;
+
+        for(int i = 1 ; i <= n ; i++) {
+            for(int t = 1 ; t <= halfSum ; t++) {
+                if(nums[i-1] <= t) dp[i][t] = dp[i-1][t-nums[i-1]] | dp[i-1][t];
+                else dp[i][t] = dp[i-1][t];
             }
-            for(int j = 0 ; j < halfSum ; j++) {
-                next[j] = next[j] | dp[j];
-            } 
-            dp = next;
         }
-        cout << halfSum << endl;
-        return dp[halfSum-1];
+        return dp[n][halfSum];
     }
 };
