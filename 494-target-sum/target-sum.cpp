@@ -1,32 +1,41 @@
 class Solution {
+private:
+    int f(vector<int> &nums,int target,int i) {
+        if(target == 0 && i == 0) return 1;
+        if(i == 0) return 0;
+
+        // target can be negative so normalization has to be applied
+        // if(dp[i][target + normalizer] != -1) return dp[i][target + normalizer];
+
+        return f(nums,target + nums[i-1],i-1) + f(nums,target - nums[i-1],i-1);
+    }
 public:
     int findTargetSumWays(vector<int>& nums, int target) {
         int n = nums.size();
-        int sum = 0;
-        for(int num : nums) sum += num;
-        if(target > sum || target < -sum) return 0;
-        int dp[n+1][2*sum+1];
-        memset(dp,0,sizeof(dp)); 
+        // return f(nums,target,n);
 
-        if(nums[0] == 0) dp[1][sum+nums[0]] = dp[1][sum-nums[0]] = 2;
-        else dp[1][sum+nums[0]] = dp[1][sum-nums[0]] = 1;
+        int totalSum = 0;
+        for(int num : nums) totalSum += num;
+        if(target > totalSum || target < -totalSum) return 0;
 
-        for(int i = 2 ; i <= n ; i++) {
-            for(int j = 0 ; j < 2*sum+1 ; j++) {
-                if(j-nums[i-1] >= 0) {
-                    dp[i][j] += dp[i-1][j-nums[i-1]];
+        vector<vector<int>> dp(n + 1, vector<int> (2*totalSum + 1,0));
+
+        int normalizer = totalSum;
+        dp[0][normalizer] = 1;
+
+        for(int i = 1 ; i <= n ; i++) {
+            for(int t = -totalSum ; t <= totalSum ; t++) {
+
+                // adding
+                if(t + nums[i-1] <= totalSum) {
+                    dp[i][t + normalizer] = dp[i-1][t + nums[i-1] + normalizer];
                 }
-                if(j+nums[i-1] < 2*sum+1) {
-                    dp[i][j] += dp[i-1][j+nums[i-1]];
-                } else {
-                    dp[i][j] += 0;
+                // subtracting
+                if(t - nums[i-1] >= -totalSum) {
+                    dp[i][t + normalizer] += dp[i-1][t - nums[i-1] + normalizer];
                 }
             }
         }
-        // for(int i = 0 ; i <= n ; i++) {
-        //     for(int j = 0 ; j < 2*sum+1 ; j++) cout << dp[i][j] << "  ";
-        //     cout <<endl;
-        // }
-        return dp[n][sum+target];
+        return dp[n][target + normalizer];
     }
 };
