@@ -1,23 +1,26 @@
 class Solution {
-public:
-    int dp[305][305];
-    int solve(vector<int> &nums,int left,int right) {
-        if(left > right) return 0;
-        if(dp[left][right] != -1) return dp[left][right];
+private:
+    int dp[302][302];
+    int f(vector<int> &nums,int i,int j) {
+        if(i >= j) return 0;
+        if(dp[i][j] != -1) return dp[i][j];
 
-        int res = 0;
+        int ans = INT_MIN;
 
-        for(int k = left ; k <= right ; k++) {
-            int temp = nums[left-1] * nums[k] * nums[right+1];
-            res = max(res,temp + solve(nums,left,k-1) + solve(nums,k+1,right));
+        for(int k = i ; k < j ; k++) {
+
+            ans = max(ans,nums[i-1] * nums[j] * nums[k] 
+                          + f(nums,i,k) + f(nums,k+1,j));
         }
-        return dp[left][right] = res;
+        return dp[i][j] = ans;
     }
+public:
     int maxCoins(vector<int>& nums) {
         nums.insert(nums.begin(),1);
-        nums.push_back(1);
-        memset(dp,-1,sizeof(dp));
+        nums.insert(nums.end(),1);
         int n = nums.size();
-        return solve(nums,1,n-2);
+
+        memset(dp,-1,sizeof(dp));
+        return f(nums,1,n-1);
     }
 };
