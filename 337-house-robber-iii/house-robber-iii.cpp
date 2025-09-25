@@ -26,8 +26,19 @@ private:
         int notPick = f(root -> left) + f(root -> right);
         return dp[root] = max(pick,notPick);
     }
+    pair<int,int> maxRob(TreeNode* root) {
+        if(root == nullptr) return {0,0};
+
+        auto [lp,lnp] = maxRob(root -> left);
+        auto [rp,rnp] = maxRob(root -> right);
+
+        int pick = root -> val + lnp + rnp;
+        int  notPick = max({lp + rp,rp + lnp,lp + rnp,lnp + rnp});
+        return {pick,notPick};
+    }
 public:
     int rob(TreeNode* root) {
-        return f(root);
+        auto [op1,op2] = maxRob(root);
+        return max(op1,op2);
     }
 };
