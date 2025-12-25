@@ -1,51 +1,27 @@
 class Solution {
 public:
     vector<bool> isArraySpecial(vector<int>& nums, vector<vector<int>>& queries) {
-        int n = nums.size();
-        int m = queries.size();
-        // Brute-Force -> O(n*m)
-        // Optimal-Soln -> O(mlogk) + O(k)
-        vector<bool> ans(m);
-        vector<pair<int,int>> v;
-        for(int i = 0 ; i < n-1 ; i++) {
+        int n = nums.size(), m = queries.size();
+
+        vector<int> prefix(n,0);
+        for(int i = 1 ; i < n ; i++) {
             if(
-                (nums[i]&1) == (nums[i+1]&1)
+                (nums[i]%2 == 0 && nums[i-1]%2 == 0)  ||
+                (nums[i]%2 == 1 && nums[i-1]%2 == 1)
             ) {
-                v.push_back({i,i+1});
-            }
-        }
-        int k = v.size();
-
-        sort(v.begin(),v.end());
-        for(int i = 0 ; i < m ; i++) {
-            int left = queries[i][0];
-            int right = queries[i][1];
-
-            int low = 0;
-            int high = k-1;
-            int lowerBound = -1;
-            // lower bound
-            while(low <= high) {
-                int mid = (low + high) >> 1;
-                if(v[mid].first >= left) {
-                    lowerBound = mid;
-                    high = mid-1;
-                } else {
-                    low = mid+1;
-                }
-            }
-            if(lowerBound == -1) {
-                ans[i] = true;
+                prefix[i] = prefix[i-1];
             } else {
-                int first = v[lowerBound].first;
-                int second = v[lowerBound].second;
-
-                if((first >= left && first < right) && (second > left && second <= right)) {
-                    ans[i] = false;
-                } else {
-                    ans[i] = true;
-                }
+                prefix[i] = 1 + prefix[i-1];
             }
+        } 
+        vector<bool> ans;
+        for(int i = 0 ; i < m ; i++) {
+            int l = queries[i][0], r = queries[i][1];
+            int pairs = r-l;
+            int currPairs = prefix[r] - prefix[l];
+            if(l == r) ans.push_back(true);
+            else if(currPairs == pairs) ans.push_back(true);
+            else ans.push_back(false);
         }
         return ans;
     }
