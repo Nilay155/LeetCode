@@ -1,25 +1,43 @@
 class Solution {
 public:
     int numberOfAlternatingGroups(vector<int>& colors, int k) {
-        
         int n = colors.size();
-        int alternatingGroups = 0;
-        int pairs = k-1;
+        int ans = 0;
 
-        int count = 0;
-        int lastElement = colors[0];
-        for(int i = 1 ; i < n; i++) {
-        
-            count += (colors[i] != lastElement) ? 1 : (-count);
-            if(count >= pairs) alternatingGroups += 1;
-            lastElement = colors[i];
+        int l = 0, r = 0;
+        while(r < n) {
+            // Counting valid windows
+            if(r-l+1 == k) {
+                ans += 1;
+                l += 1;
+            }
+
+            // Window Handling
+            if(r+1 < n) {
+                if(colors[r] != colors[r+1]) {
+                    r += 1;
+                } else {
+                    r += 1;
+                    l = r;
+                }
+            } else {
+                break;
+            }
         }
 
-        for(int i = 0 ; i < k-1 ; i++) {
-            count += (colors[i] != lastElement) ? 1 : (-count);
-            if(count >= pairs) alternatingGroups += 1;
-            lastElement = colors[i];
+        // circular pattern
+        while(l < n) {
+            if(n-l+((r+1)%n) == k) {
+                ans += 1;
+                l += 1;
+            }
+
+            if(colors[r%n] != colors[(r+1)%n]) {
+                r += 1;
+            } else {
+                break;
+            }
         }
-        return alternatingGroups;
+        return ans;
     }
 };
