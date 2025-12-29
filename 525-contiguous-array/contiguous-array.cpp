@@ -4,7 +4,7 @@ public:
         int n = nums.size();
         int count = 0, ans = 0;
         
-        map<int,int> mpp;
+        unordered_map<int,int> mpp;
         mpp[0] = -1;
         for(int i = 0 ; i < n ; i++) {
             count += (nums[i] == 1) ? 1 : -1;
