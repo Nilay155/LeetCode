@@ -1,18 +1,19 @@
 class Solution {
 public:
     vector<vector<int>> mergeArrays(vector<vector<int>>& nums1, vector<vector<int>>& nums2) {
+        
+        map<int,int> keyValue;
+        for(auto arr : nums1) {
+            keyValue[arr[0]] += arr[1];
+        }
+        for(auto arr : nums2) {
+            keyValue[arr[0]] += arr[1];
+        }
 
-        map<int,int> mpp;
-        for(auto &it : nums1) {
-            mpp[it[0]] += it[1];
+        vector<vector<int>> result;
+        for(auto [id,val] : keyValue) {
+            result.push_back({id,val});
         }
-        for(auto &it : nums2) {
-            mpp[it[0]] += it[1];
-        }
-        vector<vector<int>>res;
-        for(auto& it : mpp) {
-            res.push_back({it.first,it.second});
-        }
-        return res;
+        return result;
     }
 };
