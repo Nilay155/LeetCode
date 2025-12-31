@@ -8,7 +8,7 @@ private:
 public:
     string frequencySort(string s) {
         
-        map<char,int> counts;
+        unordered_map<char,int> counts;
         for(char ch : s) counts[ch]++;
 
         vector<pair<int,char>> arr;
