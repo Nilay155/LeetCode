@@ -12,16 +12,14 @@ public:
                 dp[j][s[j]-'0'] += 1;
             }
         }
-
-        long long  ans = 0;
+   
+        long long ans = 0;
         for(int i = 0 ; i < 9 ; i++) {
             for(int j = 0 ; j < 10 ; j++) {
-                for(int k = j+1 ; k < 10 ; k++) {
-                    long long pairs = (long long)(dp[i][j]) * (long long)(dp[i][k]);
-                    ans += pairs;
-                }
+                long long pairs = (long long)(dp[i][j]) * (long long)(n - dp[i][j]);
+                ans += pairs;
             }
         }
-        return ans;
+        return ans/2;
     }
 };
