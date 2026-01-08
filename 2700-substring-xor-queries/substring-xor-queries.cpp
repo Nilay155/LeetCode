@@ -1,45 +1,36 @@
 class Solution {
 public:
-    vector<vector<int>> substringXorQueries(string s, vector<vector<int>>& q) {
-        int n = s.length(), m = q.size();
+    vector<vector<int>> substringXorQueries(string s, vector<vector<int>>& queries) {
+        unordered_map<int, pair<int,int>> mp;   // val -> {l, r}
+        int n = s.size();
 
-        unordered_map<string, pair<int,int>> mpp;
-
-        for(int L = 1 ; L <= 32 ; L++) {
-            int l = 0, r = 0;
-            while(r < n) {
-                
-                if(r-l+1 >= L) {
-                    string sub = s.substr(l,L);
-                    // cout << sub << "  ";
-                    if(mpp.find(sub) == mpp.end()) {
-                        mpp[sub] = {l,r};
-                    }
-                    l += 1;
-                }
-                r += 1;
+        // Precompute all substrings of length <= 31
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '0') {
+                // single zero substring always has value 0
+                if (!mp.count(0)) mp[0] = {i, i};
+                continue;
             }
-            // cout << "\n";
+
+            long long val = 0;
+            for (int j = i; j < n && j < i + 31; j++) {
+                val = (val << 1) | (s[j] - '0');
+                if (!mp.count(val)) mp[val] = {i, j};
+            }
         }
+
         vector<vector<int>> ans;
-        for(int i = 0 ; i < m ; i++) {
-            int f = q[i][0], s = q[i][1];
-            int val = f ^ s;
-            string str;
-            if(val == 0) str.push_back('0');
-            while(val) {
-                int digit = val % 2;
-                str += string(1,(digit + '0'));
-                val /= 2;
-            }
-            reverse(str.begin(),str.end());
-            if(mpp.find(str) != mpp.end()) {
-                auto [li,ri] = mpp[str];
-                ans.push_back({li,ri});
+        ans.reserve(queries.size());
+
+        for (auto &q : queries) {
+            long long target = (long long)q[0] ^ q[1];
+            if (mp.count(target)) {
+                ans.push_back({mp[target].first, mp[target].second});
             } else {
-                ans.push_back({-1,-1});
+                ans.push_back({-1, -1});
             }
         }
+
         return ans;
     }
 };
