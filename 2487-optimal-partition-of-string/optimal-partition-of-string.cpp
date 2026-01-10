@@ -2,14 +2,16 @@ class Solution {
 public:
     int partitionString(string s) {
         int n = s.length();
-        vector<int> count(26,0);
-        int partitions = 0;
+        
+        int partitions = 0, mask = 0;
         for(int i = 0 ; i < n ; i++) {
-            if(count[s[i]-'a'] > 0) {
+            char ch = s[i];
+
+            if(mask & (1 << (ch-'a'))) {
                 partitions += 1;
-                count = vector<int>(26,0);
+                mask = 0;
             }
-            count[s[i]-'a'] += 1;
+            mask |= (1 << (ch-'a'));
         }
         partitions += 1;
         return partitions;
