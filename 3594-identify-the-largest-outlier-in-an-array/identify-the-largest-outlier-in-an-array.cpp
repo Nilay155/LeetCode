@@ -2,10 +2,9 @@ class Solution {
 public:
     int getLargestOutlier(vector<int>& nums) {
         int n = nums.size();
-        // sort(nums.begin(),nums.end());
         unordered_map<int,bool> map;
         unordered_map<int,int> count;
-        
+
         int sum = 0;
         for(int x : nums) {
             map[2*x] = true;
