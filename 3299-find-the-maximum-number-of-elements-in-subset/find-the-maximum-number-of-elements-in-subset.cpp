@@ -8,7 +8,7 @@ public:
         while(i < n && nums[i] == 1) i++;
         ans = max(ans,(i % 2 == 0 ? i-1 : i));
 
-        unordered_map<int,int> mpp;
+        unordered_map<long long,int> mpp;
         for(int j = i ; j < n ; j++) {
             mpp[nums[j]] += 1;
         }
@@ -16,7 +16,7 @@ public:
         for(int j = i ; j < n ; j++) {
             long long number = nums[j];
             int len = 0;
-            while(mpp.find(number) != mpp.end() && number < 1000000001) {
+            while(mpp.find(number) != mpp.end()) {
                 if(mpp[number] > 1) {
                     number *= number;
                     len += 2;
