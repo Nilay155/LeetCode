@@ -1,29 +1,25 @@
 class NumberContainers {
 private:
-    unordered_map<int,int> indexMap;
-    unordered_map<int,set<int>> numberMap;
+    unordered_map<int,int> indexValue;
+    unordered_map<int,set<int>> smallestIndex;
 public:
     NumberContainers() {
-        
+        indexValue.clear();
+        smallestIndex.clear();
     }
     
     void change(int index, int number) {
-        if(indexMap.find(index) != indexMap.end()) {
-            numberMap[indexMap[index]].erase(index);
+        if(indexValue.find(index) != indexValue.end()) {
+            int k = indexValue[index];
+            smallestIndex[k].erase(index);
         }
-        indexMap[index] = number;
-        numberMap[number].insert(index);
+        indexValue[index] = number;
+        smallestIndex[number].insert(index);
     }
     
     int find(int number) {
-        if(numberMap.find(number) != numberMap.end()) {
-            // set<int> st = numberMap[number];
-            if(numberMap[number].size() < 1) return -1;
-            int ele = *numberMap[number].begin();
-            return ele;
-        } else {
-            return -1;
-        }
+        if(smallestIndex[number].empty()) return -1;
+        else return *smallestIndex[number].begin();
     }
 };
 
