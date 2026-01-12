@@ -1,34 +1,19 @@
+typedef long long ll;
 class Solution {
 public:
-    Solution() {
-        std::ios_base::sync_with_stdio(false);
-        std::cin.tie(NULL);
-        std::cout.tie(NULL);
-    }
     long long countBadPairs(vector<int>& nums) {
         int n = nums.size();
-        // j - i != nums[j] - nums[i] && i < j
-        // Brute Force -> O(n^2)
-        // Optimal Soln -> ?
-
+        ll ans = 0;
         unordered_map<int,int> mpp;
 
-        for(int j = 0 ; j < n ; j++) {
-            mpp[nums[j]-j]++;
-        }
-
-        long long ans = 0;
-
         for(int i = 0 ; i < n ; i++) {
-            int val = nums[i]-i;
-            if(mpp.count(val)) {
-                ans += n-mpp[val]-i;
+            int result = nums[i] - i;
+            if(mpp.find(result) != mpp.end()) {
+                ans += (i - mpp[result]);
             } else {
-                ans += n-i-1;
+                ans += i;
             }
-            // cout << ans << endl;
-            mpp[val]--;
-            if(mpp[val] == 0) mpp.erase(val);
+            mpp[result] += 1;
         }
         return ans;
     }
