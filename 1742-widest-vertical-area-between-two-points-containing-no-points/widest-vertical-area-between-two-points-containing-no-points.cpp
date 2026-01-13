@@ -12,7 +12,8 @@ public:
         for(int i = 1 ; i < n ; i++) {
             int curr = points[i][0];
             maxWidth = max(maxWidth,curr - prev);
-            prev = curr;
+            prev = curr
+            ;
         }
         return maxWidth;
     }
