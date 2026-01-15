@@ -1,26 +1,22 @@
 class Solution {
-private:
-    string ans;
-    bool solve(unordered_map<string,bool> &vis,int n,string temp) {
-        if(n == 0) {
-            if(vis.find(temp) != vis.end()) return false;
-            
-            ans = temp;
-            return true;
-        }
-
-        if(solve(vis,n-1,temp+'1')) return true;
-        if(solve(vis,n-1,temp+'0')) return true;
-        return false;
-
-    }
 public:
     string findDifferentBinaryString(vector<string>& nums) {
-        
-        unordered_map<string,bool> vis;
-        for(string str : nums) vis[str] = true;
+        int n = nums.size();
+        unordered_map<string,bool> map;
+        for(auto s : nums) map[s] = true;
 
-        solve(vis,nums[0].size(),"");
-        return ans;
+        for(int i = 0 ; i < (1 << n) ; i++) { // 2^n combinations
+            string temp;
+            for(int j = n-1 ; j >= 0 ; j--) {
+
+                if(i & (1 << j)) {
+                    temp.push_back('1');
+                } else {
+                    temp.push_back('0');
+                }
+            }
+            if(map.find(temp) == map.end()) return temp;
+        }
+        return "";
     }
 };
