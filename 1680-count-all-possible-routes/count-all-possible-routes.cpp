@@ -16,7 +16,25 @@ private:
     }
 public:
     int countRoutes(vector<int>& locations, int start, int finish, int fuel) {
-        memset(dp,-1,sizeof(dp));
-        return f(locations,start,finish,fuel,locations.size());
+        // memset(dp,-1,sizeof(dp));
+        // return f(locations,start,finish,fuel,locations.size());
+        int n = locations.size();
+        vector<vector<int>> dp(n,vector<int>(fuel+1,0));
+
+        for(int f = 0 ; f <= fuel ; f++) dp[finish][f] = 1;
+        
+        for(int f = 0 ; f <= fuel ; f++) {
+            for(int i = 0 ; i < n ; i++) {
+            
+
+                for(int j = 0 ; j < n ; j++) {
+
+                    if(i != j && abs(locations[i] - locations[j]) <= f) {
+                        dp[i][f] = (dp[i][f] + dp[j][f - abs(locations[i] - locations[j])]) % MOD;
+                    }
+                }
+            }
+        }
+        return dp[start][fuel];
     }
 };
