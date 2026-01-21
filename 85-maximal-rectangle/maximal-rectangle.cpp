@@ -1,59 +1,52 @@
 class Solution {
-private: 
-    int largestRectangle(vector<int> &heights) {
-        int n = heights.size();
-        vector<int> prevSmallest(n),nextSmallest(n);
-        stack<int> st;
-        st.push(-1);
-
-        for(int i = 0 ; i < n ; i++) {
-
-            while(!st.empty() && st.top() != -1 && heights[st.top()] >= heights[i]) {
-                st.pop();
-            }
-            prevSmallest[i] = st.top();
-            st.push(i);
-        }
-
-        st = stack<int>();
-        st.push(n);
-        
-        for(int i = n-1 ; i >= 0 ; i--) {
-            while(!st.empty() && st.top() != n && heights[st.top()] >= heights[i]) {
-                st.pop();
-            }
-            nextSmallest[i] = st.top();
-            st.push(i);
-        }
-
-        int ans = 0;
-        for(int i = 0 ; i < n ; i++) {
-            int breadth = nextSmallest[i]-prevSmallest[i]-1;
-            int length = heights[i];
-
-            ans = max(ans,breadth * length);
-        }
-        return ans;
-    }
 public:
-    int maximalRectangle(vector<vector<char>>& matrix) {
-        
-        int m = matrix.size(), n = matrix[0].size();
-        vector<int> prefix(n);
-        int ans = 0;
-        for(int i = 0 ; i < m ; i++) {
-
-            vector<int> nums;
-            for(int j = 0 ; j < n ; j++) {
-                if(matrix[i][j] == '1') {
-                    prefix[j] = 1 + prefix[j];
-                } else {
-                    prefix[j] = 0;
-                }
-                nums.push_back(prefix[j]);
+    int maximalRectangle(vector<vector<char>>& mat) {
+        int n = mat.size(), m = mat[0].size();
+        int maximalArea = 0;
+        vector<vector<int>> matrix(n,vector<int>(m));
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                matrix[i][j] = mat[i][j] - '0';
             }
-            ans = max(ans,largestRectangle(nums));
         }
-        return ans;
+        for(int i = 1 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                if(matrix[i][j] == 1) {
+                    matrix[i][j] += matrix[i-1][j];
+                }
+            }
+        }
+
+        for(int i = 0 ; i < n ; i++) {
+
+            vector<int> nse(m,m), pse(m,-1);
+            stack<int> st;
+
+            // computing the prev smaller element
+            for(int j = 0 ; j < m ; j++) {
+                while(!st.empty() && matrix[i][j] <= matrix[i][st.top()]) {
+                    st.pop();
+                }
+                if(!st.empty()) pse[j] = st.top();
+                st.push(j);
+            }
+            st = stack<int>();
+            // computing the next smallest element
+            for(int j = m-1 ; j >= 0 ; j--) {
+                while(!st.empty() && matrix[i][j] <= matrix[i][st.top()]) {
+                    st.pop();
+                }
+                if(!st.empty()) nse[j] = st.top();
+                st.push(j);
+            }
+
+            for(int j = 0 ; j < m ; j++) {
+                int l = pse[j], r = nse[j];
+                int breadth = (r - l) - 1;
+                int length = matrix[i][j];
+                maximalArea = max(maximalArea,length * breadth); 
+            }
+        }
+        return maximalArea;
     }
 };
