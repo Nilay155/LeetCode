@@ -18,10 +18,10 @@ public:
         memset(dp,-1,sizeof(dp));
         int sum1 = nums[0] + nums[n-1];
         int m1 = f(nums,1,n-2,sum1) + 1;
-        memset(dp,-1,sizeof(dp));
+        // memset(dp,-1,sizeof(dp));
         int sum2 = nums[0] + nums[1];
         int m2 = f(nums,2,n-1,sum2) + 1;
-        memset(dp,-1,sizeof(dp));
+        // memset(dp,-1,sizeof(dp));
         int sum3 = nums[n-1] + nums[n-2];
         int m3 = f(nums,0,n-3,sum3) + 1;
 
