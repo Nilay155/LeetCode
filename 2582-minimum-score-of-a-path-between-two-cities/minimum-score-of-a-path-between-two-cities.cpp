@@ -11,13 +11,10 @@ public:
         vector<bool> vis(n+1,false);
         queue<int> q;
         q.push(1), vis[1] = true;
-        bool flag = false;
         int mini = INT_MAX;
 
         while(!q.empty()) {
             int node = q.front(); q.pop();
-            if(node == n) flag = true;
-
             for(auto [nbr,distance] : adjList[node]) {
                 mini = min(mini,distance);
                 if(!vis[nbr]) {
