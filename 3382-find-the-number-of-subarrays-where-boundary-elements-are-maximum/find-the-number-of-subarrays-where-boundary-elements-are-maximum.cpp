@@ -45,27 +45,66 @@ class Solution {
 public:
     long long numberOfSubarrays(vector<int>& nums) {
         int n = nums.size();
-        SparseTable st(nums);
+        // SparseTable st(nums);
 
-        unordered_map<int,pair<int,ll>> subArrays;
-        ll ans = 0;
-        for(int i = 0 ; i < n ; i++) {
+        // unordered_map<int,pair<int,ll>> subArrays;
+        // ll ans = 0;
+        // for(int i = 0 ; i < n ; i++) {
             
-            if(subArrays.find(nums[i]) != subArrays.end()) {
-                auto [prevIndex, count] = subArrays[nums[i]];
-                int currIndex = i;
+        //     if(subArrays.find(nums[i]) != subArrays.end()) {
+        //         auto [prevIndex, count] = subArrays[nums[i]];
+        //         int currIndex = i;
 
-                int mx = st.query(prevIndex,currIndex);
-                if(mx == nums[i]) {
-                    subArrays[nums[i]] = {i , count + 1};
-                } else {
-                    subArrays[nums[i]] = {i , 0};
-                }
-                ans += subArrays[nums[i]].second + 1;
-            } else {
-                subArrays[nums[i]] = {i, 0};
-                ans += subArrays[nums[i]].second + 1;
+        //         int mx = st.query(prevIndex,currIndex);
+        //         if(mx == nums[i]) {
+        //             subArrays[nums[i]] = {i , count + 1};
+        //         } else {
+        //             subArrays[nums[i]] = {i , 0};
+        //         }
+        //         ans += subArrays[nums[i]].second + 1;
+        //     } else {
+        //         subArrays[nums[i]] = {i, 0};
+        //         ans += subArrays[nums[i]].second + 1;
+        //     }
+        // }
+        vector<int> pge(n,-1);
+        stack<int> st;
+
+        for(int i = 0 ; i < n ; i++) {
+
+            while(!st.empty() && nums[st.top()] <= nums[i]) {
+                st.pop();
             }
+
+            if(!st.empty()) pge[i] = st.top();
+            st.push(i);
+        }
+        // st = stack<int>();
+        // for(int i = n-1 ; i >= 0 ; i--) {
+        //     while(!st.empty() && nums[st.top()] <= nums[i]) {
+        //         st.pop();
+        //     }
+        //     if(!st.empty()) nge[i] = st.top();
+        //     st.push(i);
+        // }
+        ll ans = 0;
+        unordered_map<int,pair<int,ll>> subArrays;
+
+        for(int i = 0 ; i < n ; i++) {
+            if(subArrays.find(nums[i]) != subArrays.end()) {
+                auto [prevIndex,count] = subArrays[nums[i]];
+                int currIndex = i;
+                int prevGreaterElement = pge[i];
+
+                if(prevGreaterElement < prevIndex) {
+                    subArrays[nums[i]] = {currIndex,count + 1};
+                } else {
+                    subArrays[nums[i]] = {currIndex,0};
+                }
+            } else {
+                subArrays[nums[i]] = {i,0};
+            }
+            ans += subArrays[nums[i]].second + 1;
         }
         return ans;
     }
