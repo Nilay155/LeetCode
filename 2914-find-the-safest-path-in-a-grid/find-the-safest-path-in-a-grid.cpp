@@ -29,14 +29,8 @@ public:
                 }
             }
         }   
-
-        // for(int i = 0 ; i < n ; i++) {
-        //     for(int j = 0 ; j < n ; j++) {
-        //         cout << safeNess[i][j] << "   ";
-        //     }cout << "\n";
-        // }
+        
         vis = vector<vector<bool>> (n,vector<bool>(n,false));
-        // q = queue<pair<int,int>>();
         priority_queue<tuple<int,int,int>> pq;
         pq.push({safeNess[0][0],0,0});
         int ans = INT_MAX;
