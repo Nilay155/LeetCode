@@ -10,22 +10,32 @@
  * };
  */
 class FindElements {
-private:
-    unordered_map<int,bool> vis;
-    void dfs(TreeNode* root,int val) {
-        if(root == NULL) return ;
-        root->val = val;
-        vis[val] = true;
-        dfs(root->left,2*val+1);
-        dfs(root->right,2*val+2);
-    }
 public:
+    TreeNode* root = nullptr;
+    unordered_map<int,bool> vis;
     FindElements(TreeNode* root) {
-        dfs(root,0);
+        this -> root = root;
+        root -> val = 0;
+        queue<TreeNode*> q;
+        q.push(root);
+
+        while(!q.empty()) {
+            auto node = q.front(); q.pop();
+            vis[node -> val] = true;
+            if(node -> left) {
+                node -> left -> val = 2 * node -> val + 1;
+                q.push(node -> left);
+            }
+            if(node -> right) {
+                node -> right -> val = 2 * node -> val + 2;
+                q.push(node -> right);
+            }
+        }
+
     }
     
     bool find(int target) {
-        if(vis.find(target) != vis.end()) return true;
+        if(vis.count(target)) return true;
         else return false;
     }
 };
