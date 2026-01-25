@@ -17,7 +17,7 @@ public:
                     int length = maxx - minx;
                     int breadth = maxy - miny;
 
-                    ll area = 1LL*min(length,breadth) * min(length,breadth);
+                    ll area = 1LL * min(length,breadth) * min(length,breadth);
                     maxSquare = max(maxSquare,area);
                 }
             }
