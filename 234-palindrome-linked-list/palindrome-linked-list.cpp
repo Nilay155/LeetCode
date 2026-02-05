@@ -9,52 +9,54 @@
  * };
  */
 class Solution {
-private:
-    ListNode* reverseLL(ListNode* head) {
-        if(head == NULL || head->next == NULL) return nullptr;
-
-        ListNode* prev = NULL;
-        ListNode* curr = head;
-        ListNode* next = head->next;
-
-        while(curr != NULL) {
-            curr -> next = prev;
-            prev = curr;
-            curr = next;
-            if(next != NULL)
-                next = next -> next;
-        }
-        return prev;
-    }
-private:
-    bool plaindromeCheck(ListNode* head) {
-        if(head == NULL) return true;
-        if(head -> next == NULL) return true;
-        if(head -> next -> next == NULL) {
-            if(head -> val == head -> next -> val) return true;
-            else return false;
-        }
-        ListNode* slow = head;
-        ListNode* fast = head;
-
-        while(fast != NULL && fast -> next != NULL) {
-            fast = fast -> next -> next;
-            slow = slow -> next;
-        }
-
-        ListNode* revHead = reverseLL(slow);
-        ListNode* temp = head;
-
-        while(revHead != NULL && temp != NULL) {
-            if(revHead -> val != temp -> val) return false;
-            revHead = revHead -> next;
-            temp = temp -> next;
-        }
-        return true;
-    }
-
 public:
-    bool isPalindrome(ListNode* head) {
-        return plaindromeCheck(head);
+        int getLen(ListNode* head) {
+    ListNode* temp = head;
+    int count = 0;
+    while(temp != nullptr) {
+        temp = temp -> next;
+        count += 1;
     }
+    return count;
+}
+ListNode* reverseLL(ListNode* head,int len) {
+    int half = len / 2 + len % 2;
+    int count = 0;
+    ListNode* temp = head;
+    ListNode* prevTemp = nullptr;
+    while(count < half) {
+        count += 1;
+        prevTemp = temp;
+        temp = temp -> next;
+    }
+    // cout << temp -> val << "\n";
+    prevTemp -> next = nullptr;
+    ListNode* prev = nullptr;
+    ListNode* curr = temp;
+    ListNode* forward = temp -> next;
+    
+    while(curr != nullptr) {
+        ListNode* node = curr;
+        curr -> next = prev;
+        prev = curr;
+        curr =  forward;
+        if(forward) forward = forward -> next;
+    }
+    return prev;
+    
+}
+bool isPalindrome(ListNode* head){
+    int length = getLen(head);
+    if(length == 0 || length == 1) return true;
+    ListNode* front = head;
+    ListNode* back = reverseLL(head,length);
+    int half = length / 2;
+    // cout << getLen(front) << "    " << getLen(back) << "\n";    
+    while(half--) {
+        if(front -> val != back -> val) return false;
+        front = front -> next;
+        back = back -> next;
+    }
+    return true;
+}
 };
