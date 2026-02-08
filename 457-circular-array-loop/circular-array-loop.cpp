@@ -1,33 +1,45 @@
 class Solution {
 private:
-    bool check(unordered_map<int,pair<int,bool>> &next,int curr,int prev,vector<bool> &vis) {
-        if(next.find(curr) == next.end()) return false;
-        if(vis[curr]) return true;
-
-        vis[curr] = true;
-        bool ans = false;
-        if(prev == -1 || next[prev].second == next[curr].second) 
-            ans = ans | check(next,next[curr].first,curr,vis);
-        return ans;
-    }
-    bool detectCycle(unordered_map<int,pair<int,bool>> &nextPosition,int n) {
-        bool ans = false;
-        for(int i = 0 ; i < n ; i++) {
-            vector<bool> vis(n,false);
-            ans = ans | check(nextPosition,i,-1,vis);
-        }
-        return ans;
+    int nextPosition(int p,int k,int n) {
+        return (((p + k) % n) + n) % n;
     }
 public:
     bool circularArrayLoop(vector<int>& nums) {
-        int n = nums.size();
-
-        unordered_map<int,pair<int,bool>> nextPosition;
+        int n = nums.size();    
         for(int i = 0 ; i < n ; i++) {
-            int nextIndex = (((i + nums[i]) % n) + n) % n;
-            if(i == nextIndex) continue; // self loop
-            nextPosition[i] = {nextIndex,(nums[i] < 0 ? false : true)};
+            if(i == nextPosition(i,nums[i],n)) nums[i] = 1111; // self-loop
         }
-        return detectCycle(nextPosition,n);
+        for(int i = 0 ; i < n ; i++) {
+            if(nums[i] == 1111) continue; // dead - end to a SLL not a CLL  
+
+            bool flag = (nums[i] > 0);
+            int slow = i, fast = i;
+
+            while(true) {
+                // fast-pointer
+                if(nums[fast] != 1111 && (nums[fast] > 0) == flag) { // pos-neg sequence check
+                    int nx = nextPosition(fast,nums[fast],n);
+                    fast = nx;
+                    if(nums[fast] != 1111 && ((nums[fast] > 0) == flag)) {
+                        int nx = nextPosition(fast,nums[fast],n);
+                        fast = nx;
+                    } else {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+                // slow pointer
+                int nx = nextPosition(slow,nums[slow],n);
+                slow = nx;
+                // cycle check
+                if(slow == fast) {
+                    // cout << slow << "   " << fast << "   " << i ;
+                    return true;
+                }
+            }
+
+        }
+        return false;
     }
 };
