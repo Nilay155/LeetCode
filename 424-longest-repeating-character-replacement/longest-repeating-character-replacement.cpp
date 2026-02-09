@@ -2,19 +2,20 @@ class Solution {
 public:
     int characterReplacement(string s, int k) {
         int n = s.length();
-        vector<int> count(26,0);
-        int l = 0;
-        int maxi = 0, res = 0;
-        for(int r = 0 ; r < n ; r++) {
-            count[s[r]-'A'] += 1;
-            maxi = max(maxi,count[s[r]-'A']);
+        vector<int> counts(26,0);
+        int l = 0, r = 0,maxi = 0, longestSubstring = 0;
+        while(r < n) {
+            counts[s[r]-'A'] += 1;
+            maxi = max(maxi,counts[s[r]-'A']);
 
-            if((r-l+1)-maxi > k) {
-                count[s[l]-'A'] -= 1;
+            while(l < r && (r - l + 1 - maxi) > k) {
+                counts[s[l]-'A'] -= 1;
+                maxi = max(maxi,counts[s[l]-'A']);
                 l += 1;
             }
-            res = max(res,r-l+1);
+            longestSubstring = max(longestSubstring,r - l + 1);
+            r += 1;
         }
-        return res;
+        return longestSubstring;
     }
 };
