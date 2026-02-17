@@ -1,23 +1,53 @@
 class Solution {
 public:
     vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
-
-        intervals.push_back(newInterval);
-        sort(intervals.begin(),intervals.end());
         int n = intervals.size();
-        int start = intervals[0][0], end = intervals[0][1];
-        vector<vector<int>> ans;
+        if(n == 0) return {newInterval};
+        int ns = newInterval[0], ne = newInterval[1];
 
-        for(int i = 1 ; i < n ; i++) {
-            if(intervals[i][0] <= end) {
-                end = max(end,intervals[i][1]);
-            } else {
-                ans.push_back({start,end});
-                start = intervals[i][0];
-                end = intervals[i][1];
-            }
+        if(intervals[0][0] > ne) {
+            intervals.insert(intervals.begin(), newInterval);
+            return intervals;
         }
-        ans.push_back({start,end});
+        if(intervals[n-1][1] < ns) {
+            intervals.push_back(newInterval);
+            return intervals;
+        }
+
+        vector<vector<int>> ans;
+        int i = 0;
+        while(i < n && ns > intervals[i][1]) {
+            ans.push_back(intervals[i]);
+            i += 1;
+        }
+
+        // if i < n means overlapping with an interval is found
+        int s = intervals[i][0], e = intervals[i][1];
+        if((ns >= s || (ne >= s && ne <= e)) || (e >= ns && e <= ne)) { // check if these two intervals in case are overlapping
+            // case -> 1,2,3
+            // cout << i << "\n";
+            s = min(s,ns), e = max(e,ne);
+            i += 1;
+            while(i < n) {
+                int ss = intervals[i][0], ee = intervals[i][1];
+                if(ss <= e) {
+                    s = min(ss,s);
+                    e = max(e,ee);
+                } else {
+                    ans.push_back({s,e});
+                    s = ss, e = ee;
+                }
+                i += 1;
+            }
+            ans.push_back({s,e});
+        } else{
+            ans.push_back({ns,ne});
+        }
+    
+        while(i < n) {
+            ans.push_back(intervals[i]);
+            i += 1;
+        }
         return ans;
     }
 };
