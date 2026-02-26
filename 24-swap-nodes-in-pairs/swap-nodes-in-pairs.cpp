@@ -9,27 +9,52 @@
  * };
  */
 class Solution {
-private:
-    ListNode* reversePairs(ListNode* head) {
-        if(head == nullptr) return head; // 0 node
-        if(head -> next == nullptr) return head; // 1 node
-
-        ListNode* prev = nullptr;
-        ListNode* curr = head;
-        ListNode* forward = head -> next;
-
-        // reverse two nodes
-        curr -> next = prev;
-        prev = curr;
-        curr = forward;
-        forward = forward -> next;
-        curr -> next = prev;
-
-        prev -> next = reversePairs(forward);
-        return curr;
-    }
 public:
+    int getLen(ListNode* head) {
+        ListNode* temp = head;
+        int count = 0;
+        
+        while(temp) {
+            temp = temp -> next;
+            count += 1;
+        }
+        return count;
+    }
     ListNode* swapPairs(ListNode* head) {
-        return reversePairs(head);
+        if(head == nullptr || head -> next == nullptr) return head;
+        
+        // reverse groups of size = 2
+        int length = getLen(head);
+        int groups = length / 2;
+        
+        ListNode* p = nullptr;
+        ListNode* c = head;
+        ListNode* f = head -> next;
+        ListNode* last = nullptr;
+        ListNode* ans = nullptr;
+        int count = 0;
+        
+        while(groups--) {
+            int sz = 2;
+            ListNode* ch = c;
+            while(sz--) {
+                ListNode* t = c;
+                c -> next = p;
+                c = f;
+                if(f) f = f -> next;
+                p = t;
+            }
+            
+            if(count > 0) {
+                last -> next = p;
+            } else {
+                ans = p;
+            }
+            count += 1;
+            p = nullptr;
+            last = ch;
+        } 
+        if(c) last -> next = c;
+        return ans;
     }
 };
