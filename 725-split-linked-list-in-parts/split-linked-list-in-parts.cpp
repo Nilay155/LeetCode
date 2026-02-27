@@ -10,44 +10,45 @@
  */
 class Solution {
 private:
-    int getLength(ListNode* head) {
-        int count = 0;
-        ListNode* temp = head;
-
-        while(temp) {
-            temp = temp -> next;
-            count += 1;
+    int getLinkedListLength(ListNode* head) {
+        int length = 0;
+        ListNode* curr = head;
+        while(curr) {
+            curr = curr -> next;
+            length += 1;
         }
-        return count;
+        return length;
     }
 public:
     vector<ListNode*> splitListToParts(ListNode* head, int k) {
-        int length = getLength(head);
-        int q = length / k , r = length % k;
+        int len = getLinkedListLength(head);
+        if(len == 0) return vector<ListNode*>(k);
 
-        ListNode* temp = head;
+        int q = len / k, r = len % k;
         vector<ListNode*> ans;
-        while(temp || ans.size() < k) {
-            int count = 0;
-            ListNode* start = temp;
-            ListNode* prev = nullptr;
 
-            while(count < q) {
-                count += 1;
-                prev = temp;
-                temp = temp -> next;
+        ListNode* curr = head;
+        ListNode* prev = nullptr;
+
+        while(k--) {
+            ListNode* res = nullptr;
+            int sz = q;
+
+            while(sz--) {
+                if(!res) res = curr;
+                prev = curr;
+                curr = curr -> next;
             }
+
             if(r) {
-                prev = temp;
-                temp = temp -> next;
-                r -= 1;
+                if(!res) res = curr;
+                prev = curr;
+                curr = curr -> next;
+                r--;
             }
-            if(prev) {
-                prev -> next = nullptr;
-                ans.push_back(start);
-            } else {
-                ans.push_back(nullptr);
-            }
+            prev -> next = nullptr;
+            ans.push_back(res);
+
         }
         return ans;
     }
