@@ -58,7 +58,7 @@ public:
                 first.erase(it);
             }
             f(first,second,nums[i]);
-            
+
             if(k & 1)
                 ans.push_back((double)*first.rbegin());
             else
