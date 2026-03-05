@@ -1,9 +1,10 @@
 class Solution {
 private:
-    vector<int> computeLargest(vector<int> &nums,int k) {
-        stack<int> st;
+    vector<int> getLargestNumber(vector<int> &nums,int k) {
         int n = nums.size();
         int drops = n - k;
+
+        stack<int> st;
         for(int i = 0 ; i < n ; i++) {
             while(!st.empty() && st.top() < nums[i] && drops) {
                 st.pop();
@@ -11,49 +12,74 @@ private:
             }
             st.push(nums[i]);
         }
-        vector<int> res;
+        while(drops) {
+            st.pop();
+            drops -= 1;
+        }
+        
+        vector<int> result;
         while(!st.empty()) {
-            res.push_back(st.top());
+            result.push_back(st.top());
             st.pop();
         }
-        reverse(res.begin(),res.end());
-        return vector<int>(res.begin(),res.begin() + k);
+        reverse(result.begin(),result.end());
+        return result;
     }
-    vector<int> makeLargestNumber(vector<int> &a,vector<int> &b) {
+    vector<int> mergeNumbers(vector<int> &A,vector<int> &B) {
+        int n = A.size(), m = B.size();
+        vector<int> largestNumber;
+        int i = 0, j = 0;
+        // Note : merging two arrays in sorted manner is different than creating the        largest number
 
-        int i = 0, n = a.size();
-        int j = 0, m = b.size();
-        vector<int> ans;
         while(i < n && j < m) {
-            if(a[i] > b[j]) {
-                ans.push_back(a[i]);
+
+            if(A[i] > B[j]) {
+                largestNumber.push_back(A[i]);
                 i += 1;
-            } else if(b[j] > a[i]) {
-                ans.push_back(b[j]);
+            } else if(B[j] > A[i]) {
+                largestNumber.push_back(B[j]);
                 j += 1;
             } else {
-                int l = i, r = j;
-                while(l+1 < n && r+1 < m && a[l+1] == b[r+1]) {
-                    l += 1, r += 1;
+                // this is where the clash happens
+                // A = [1,100], B = [1,20]
+                // if I make a move for B then ans = [1B,20B,1A,100A]
+                // but if I make a move for A then ans = [1A,100A,1B,20B]
+                // moveA > moveB
+                // so after the equal signs the element at the largest should be taken
+
+                int u = i + 1, v = j + 1;
+
+                while(u < n && v < m && A[u] == B[v]) {
+                    u += 1, v += 1;
                 }
-                if(l+1 < n && r+1 < m) {
-                    if(a[l+1] > b[r+1]) ans.push_back(a[i++]);
-                    else ans.push_back(b[j++]);
+
+                if(v == m) {
+                    largestNumber.push_back(A[i]);
+                    i += 1;
+                } else if(u == n) {
+                    largestNumber.push_back(B[j]);
+                    j += 1;
                 } else {
-                    if(l+1 == n) ans.push_back(b[j++]);
-                    else ans.push_back(a[i++]);
+                    if(A[u] > B[v]) {
+                        largestNumber.push_back(A[i]);
+                        i += 1;
+                    } else {
+                        largestNumber.push_back(B[j]);
+                        j += 1;
+                    }
                 }
+
             }
         }
         while(i < n) {
-            ans.push_back(a[i]);
+            largestNumber.push_back(A[i]);
             i += 1;
         }
         while(j < m) {
-            ans.push_back(b[j]);
+            largestNumber.push_back(B[j]);
             j += 1;
         }
-        return ans;
+        return largestNumber;
     }
 public:
     vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
@@ -63,13 +89,14 @@ public:
             int k1 = i, k2 = k - i;
             if(k1 > n || k2 > m) continue;
 
-            vector<int> a1 = computeLargest(nums1,k1);
-            vector<int> a2 = computeLargest(nums2,k2);
+            // It's possible to make k length number using k1 and k2
+            vector<int> A = getLargestNumber(nums1,k1);
+            vector<int> B = getLargestNumber(nums2,k2);
 
-            vector<int> res = makeLargestNumber(a1,a2);
-            
-            if(res > ans)
-                ans = res;
+            // After getting the two largest numbers we need to merge them the largest possible k-size number
+
+            vector<int> merged = mergeNumbers(A,B);
+            if(ans < merged) ans = merged; // this does the lexiographical comparison
         }
         return ans;
     }
