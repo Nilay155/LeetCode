@@ -1,26 +1,19 @@
 class Solution {
 public:
     vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
-        // Brute Force -> O(n^2)
-        int n = nums1.size();
-        int m = nums2.size();
-        // priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,greater<pair<int,pair<int,int>>>> pq;
-        priority_queue<pair<int,pair<int,int>>> maxHeap;
-        for(int i = 0 ; i < n ; i++) {
-            for(int j = 0 ; j < m ; j++) {
-                int sum = nums1[i] + nums2[j];
-                if(maxHeap.size() >= k) {
-                    if(maxHeap.top().first <= sum) break;
-                    else maxHeap.pop();
-                }
-                maxHeap.push({sum,{nums1[i],nums2[j]}});
-            }
-        }
+        int n = nums1.size(), m = nums2.size();
+        priority_queue<tuple<int,int,int>,vector<tuple<int,int,int>>,greater<tuple<int,int,int>>> pq;
 
+        for(int i = 0 ; i < n ; i++) {
+            pq.push({nums1[i] + nums2[0],i,0}); // len >= 1 for both nums1 and nums2
+        }
+        
         vector<vector<int>> ans;
         while(k--) {
-            auto p = maxHeap.top().second; maxHeap.pop();
-            ans.push_back({p.first,p.second});
+            auto [sum,i,j] = pq.top(); pq.pop();
+            ans.push_back({nums1[i],nums2[j]});
+            if(j + 1 < m)
+                pq.push({nums1[i] + nums2[j+1],i,j+1});
         }
         return ans;
     }
