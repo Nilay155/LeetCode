@@ -22,7 +22,7 @@ public:
         ll m = batt.size(), ts = 0;
         for(int b : batt) ts += b;
         sort(batt.begin(),batt.end());
-        ll s = 0, e = ts;
+        ll s = 0, e = ts/n;
         while(s <= e) {
             ll mid = s + (e - s) / 2;
             if(check(batt,mid,n)) 
