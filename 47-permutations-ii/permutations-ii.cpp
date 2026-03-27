@@ -1,29 +1,31 @@
 class Solution {
 private:
+    vector<int> arr;
     vector<vector<int>> ans;
 
-void f(vector<int> &s, int i, int &n) {
-    if (i >= n) {
-        ans.push_back(s);
-        return;
+    void f(vector<int> &freq,int count) {
+        if(count == 0) {
+            ans.push_back(arr);
+            return ;
+        }
+
+        for(int k = 0 ; k <= 20 ; k++) {
+
+            if(freq[k]) {
+                arr.push_back(k - 10);
+                freq[k] -= 1;
+                f(freq,count - 1);
+                freq[k] += 1;
+                arr.pop_back();
+            }
+        }
     }
-
-    unordered_set<int> used;
-
-    for (int j = i; j < n; j++) {
-        if (used.count(s[j])) continue;
-
-        used.insert(s[j]);
-        swap(s[i], s[j]);
-        f(s, i + 1, n);
-        swap(s[i], s[j]);
-    }
-}
 public:
     vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<int> freq(21,0);
+        for(int f : nums) freq[f + 10] += 1;
         int n = nums.size();
-        sort(nums.begin(), nums.end());
-        f(nums, 0, n);
+        f(freq,n);
         return ans;
     }
 };
