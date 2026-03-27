@@ -1,25 +1,23 @@
 class Solution {
 private:
-    int solve(string &tiles,vector<bool> &vis,string &temp,int &n,vector<int> &count) {
-        
+    int f(int n,vector<int> &count) {
         int ans = 0;
         for(int i = 0 ; i < 26 ; i++) {
 
             if(count[i]) {
-                count[i]--;
-                ans += 1 + solve(tiles,vis,temp,n,count);
-                count[i]++;
+                count[i] -= 1;
+                ans += 1 + f(n - 1, count);
+                count[i] += 1;
             }
         }
         return ans;
     }
 public:
     int numTilePossibilities(string tiles) {
-        int n = tiles.size();
-        vector<bool> vis(n,false);
         vector<int> count(26,0);
-        string temp;
-        for(int i = 0 ; i < n ; i++) count[tiles[i]-'A']++;
-        return solve(tiles,vis,temp,n,count);
+        for(char ch : tiles) count[ch - 'A'] += 1;
+
+        int n = tiles.size();
+        return f(n,count);
     }
 };
