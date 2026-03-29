@@ -35,7 +35,7 @@ public:
         }
 
         while(r < n) {
-            // cout << r << "  " << rSum << "  " << mini << "\n";
+
             if(rSum >= abs(mini))
                 return r;
             
