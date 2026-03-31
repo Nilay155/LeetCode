@@ -3,19 +3,16 @@ public:
     int maximumSwap(int num) {
         string s = to_string(num);
         int n = s.length();
-        for(int i = 0 ; i < n ; i++) {
-            int maxi = s[i] - '0', index = i;
-            for(int j = n - 1 ; j > i ; j--) {
-                if(s[j] - '0' > maxi) {
-                    index = j;
-                    maxi = s[j] - '0';
-                }
+        int maxi = -1, index = -1,ans = 0;
+        for(int i = n - 1 ; i >= 0 ; i--) {
+            if(s[i] - '0' > maxi) {
+                maxi = s[i] - '0';
+                index = i;
             }
-            if(index != i) {
-                swap(s[i],s[index]);
-                return stoi(s);
-            }
+            swap(s[i],s[index]);
+            ans = max(ans,stoi(s));
+            swap(s[i],s[index]);
         }
-        return num;
+        return ans;
     }
 };
