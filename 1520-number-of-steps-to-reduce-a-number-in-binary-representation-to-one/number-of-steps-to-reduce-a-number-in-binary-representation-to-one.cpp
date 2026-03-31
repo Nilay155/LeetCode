@@ -22,20 +22,19 @@ private:
     }
 public:
     int numSteps(string s) {
-        int steps = 0;
-
-        while(s.length() > 1) {
-
-            int n = s.length();
-            if(s[n - 1] == '1') {
-                // Binary Addition
-                s = binaryAddition(s);
+        int steps = 0, n = s.length();
+        int carry = 0;
+        for(int i = n - 1 ; i >= 1 ; i--) {
+            int total = (s[i] - '0') + carry;
+            if(total == 1) {
+                carry = 1;
+                steps += 2;
             } else {
-                // right shift operation
-                s.pop_back();
+                if(total == 2) carry = 1;
+                steps += 1;
             }
-            steps += 1;
         }
+        if(carry) steps += 1;
         return steps;
     }
 };
