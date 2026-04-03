@@ -1,73 +1,79 @@
 class Solution {
 private:
-    void lastLine(vector<string> &arr,vector<string> &ans,int chars,int spaces,int maxWidth) {
-        int spacesLeft = maxWidth - chars;
-        int words = arr.size();
+    void fullJustify(int i,int count,int totalLength,vector<string> &ans,int maxWidth,vector<string>& words) {
+        int j = i - count;  
+        int spaces = maxWidth - totalLength;
+
+        if(count == 1) {
+            string res = words[j];
+            res.append(spaces,' ');
+            ans.push_back(res);
+            return ;
+        }
+        int q = spaces / (count - 1);
+        int k = q;
+        int r = spaces % (count - 1);
 
         string res;
-        for(int i = 0 ; i < words ; i++) {
-            res += arr[i];
-            if(i == words-1) {
-                res.append(spacesLeft,' ');
-                break;
+        while(j < i) {
+            res += words[j];
+            if(count > 1) {
+                res.append(k,' ');
+                count--;
             }
-            if(spacesLeft) {
+            if(r > 0) {
                 res.append(1,' ');
-                spacesLeft -= 1;
+                r--;
             }
+            j += 1;
         }
         ans.push_back(res);
     }
-    void addContent(vector<string> &arr,vector<string> &ans,int chars,int spaces,int maxWidth) {
-        int spacesLeft = maxWidth - chars;
-        int words = arr.size();
+    void leftJustify(int i,int count,int totalLength,vector<string> &ans,int maxWidth,vector<string>& words) {
+        int j = i - count;
+        int spaces = maxWidth - totalLength;
 
-        int gap = spacesLeft/((words-1) == 0 ? 1 : words-1);
-        int extraGaps = spacesLeft%((words-1) == 0 ? 1 : words-1);
-        cout << extraGaps << endl;
-        string res;
-        for(int i = 0 ; i < words ; i++) {
-            res += arr[i];
-            if(i == words-1) {
-                int diff = maxWidth - res.size();
-                if(diff > 0) res.append(diff,' ');
-                break;
-            }
-            res.append(gap,' ');
-            if(extraGaps) {
-                res.append(1,' ');
-                extraGaps -= 1;
-            }
+        if(count == 1) {
+            string res = words[j];
+            res.append(spaces,' ');
+            ans.push_back(res);
+            return;
         }
+        string res;
+        while(j < i) {
+            res += words[j];
+            if(spaces > 0) {
+                spaces--;
+                res.append(1,' ');
+            }
+            j += 1;
+        }
+        if(spaces > 0)
+            res.append(spaces,' ');
         ans.push_back(res);
     }
 public:
     vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        
         int n = words.size();
         vector<string> ans;
 
-        int i = 0;
+        int i = 0, count = 0, totalLength = 0;
         while(i < n) {
-            int chars = 0;
-            int spaces = 0;
-            int len = words[i].size();
-            vector<string> temp;
-
-            while(i < n && chars + spaces +  len <= maxWidth) {
-                chars += len;
-                temp.push_back(words[i]);
-                spaces += 1;
-                i++;
-                if(i < n) len = words[i].size();
+            if(totalLength + count + words[i].length() > maxWidth) {
+                // for the last count words do the simulation
+                fullJustify(i,count,totalLength,ans,maxWidth,words);
+                totalLength = 0;
+                count = 0;
+            } else {
+                totalLength += words[i].length();
+                count += 1;
+                i += 1;
             }
-            
-            // If it's a line
-            if(i >= n)
-                lastLine(temp,ans,chars,spaces,maxWidth); 
-            // or if it's not
-            else 
-                addContent(temp,ans,chars,spaces,maxWidth);
         }
+
+        if(count > 0)
+            leftJustify(i,count,totalLength,ans,maxWidth,words);
         return ans;
     }
 };
