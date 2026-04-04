@@ -11,34 +11,19 @@
  */
 class Solution {
 private:
-    // int maxi = INT_MIN;
-    unordered_map<TreeNode*,int> dp;
-    int f(TreeNode* root) {
+    unordered_map<TreeNode*,unordered_map<bool,int>> dp;
+    int maximumTheft(TreeNode* root,bool flag) {
         if(root == nullptr) return 0;
-        if(dp.find(root) != dp.end()) return dp[root];
+        if(dp.count(root) && dp[root].count(flag)) return dp[root][flag];
 
-        int pick = root -> val; 
-        if(root -> left != nullptr)
-            pick += f(root -> left -> left) + f(root -> left -> right);
-        if(root -> right != nullptr)
-            pick += f(root -> right -> left) + f(root -> right -> right);
-
-        int notPick = f(root -> left) + f(root -> right);
-        return dp[root] = max(pick,notPick);
-    }
-    pair<int,int> maxRob(TreeNode* root) {
-        if(root == nullptr) return {0,0};
-
-        auto [lp,lnp] = maxRob(root -> left);
-        auto [rp,rnp] = maxRob(root -> right);
-
-        int pick = root -> val + lnp + rnp;
-        int  notPick = max({lp + rp,rp + lnp,lp + rnp,lnp + rnp});
-        return {pick,notPick};
+        int rob = 0;
+        if(flag) 
+            rob = root -> val + maximumTheft(root -> left,false) + maximumTheft(root -> right,false);
+        int noRob = maximumTheft(root -> left,true) + maximumTheft(root -> right,true);
+        return dp[root][flag] = max(rob,noRob);
     }
 public:
     int rob(TreeNode* root) {
-        auto [op1,op2] = maxRob(root);
-        return max(op1,op2);
+        return maximumTheft(root,true);
     }
 };
