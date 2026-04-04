@@ -10,7 +10,6 @@ public:
         string ans;
         for(string s : arr) ans += s;
         int m = ans.length();
-        // int m = 10;
         for(int i = 0 ; i < m ; i++) {
             if(ans[i] != '0')
                 return ans.substr(i,m - i);
