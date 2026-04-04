@@ -18,7 +18,7 @@ private:
         auto [rr,rnr] = maximumTheft(root -> right);
         
         int rob = root -> val + lnr + rnr;
-        int noRob = max({lr + rr,lr + rnr,rr + lnr,lnr + rnr});
+        int noRob = max(lr,lnr) + max(rr,rnr);
         return {rob,noRob};
     }
 public:
