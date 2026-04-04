@@ -11,19 +11,19 @@
  */
 class Solution {
 private:
-    unordered_map<TreeNode*,unordered_map<bool,int>> dp;
-    int maximumTheft(TreeNode* root,bool flag) {
-        if(root == nullptr) return 0;
-        if(dp.count(root) && dp[root].count(flag)) return dp[root][flag];
+    pair<int,int> maximumTheft(TreeNode* root) {
+        if(root == nullptr) return {0,0};
 
-        int rob = 0;
-        if(flag) 
-            rob = root -> val + maximumTheft(root -> left,false) + maximumTheft(root -> right,false);
-        int noRob = maximumTheft(root -> left,true) + maximumTheft(root -> right,true);
-        return dp[root][flag] = max(rob,noRob);
+        auto [lr,lnr] = maximumTheft(root -> left);
+        auto [rr,rnr] = maximumTheft(root -> right);
+        
+        int rob = root -> val + lnr + rnr;
+        int noRob = max({lr + rr,lr + rnr,rr + lnr,lnr + rnr});
+        return {rob,noRob};
     }
 public:
     int rob(TreeNode* root) {
-        return maximumTheft(root,true);
+        auto [k1,k2]= maximumTheft(root);
+        return max(k1,k2);
     }
 };
