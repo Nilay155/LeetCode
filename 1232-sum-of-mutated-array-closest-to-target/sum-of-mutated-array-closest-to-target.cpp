@@ -10,17 +10,25 @@ public:
         for(int i = 1 ; i < n ; i++) prefixSum[i] = nums[i] + prefixSum[i - 1];
 
         int ans = INT_MAX, diff = INT_MAX;
-        for(int k = 0 ; k <= limit ; k++) {
+        int l = 0, r = limit;
 
-            int index = upper_bound(nums.begin(),nums.end(),k) - nums.begin();
-            
+        while(l <= r) {
+            // cout << l << "   " << r << "\n";
+            int mid = l + (r - l) / 2;
+            int index = upper_bound(nums.begin(),nums.end(),mid) - nums.begin();
+
             int newSum = (index - 1 >= 0) ? prefixSum[index - 1] : 0;
-            newSum += (n - index) * k;
+            newSum += (n - index) * mid;
 
-            if(abs(target - newSum) < diff) {
-                diff = abs(target - newSum);
-                ans = k;
+            if(abs(target - newSum) <= diff) {
+                int temp = abs(target - newSum);
+                if(temp == diff) ans = min(ans,mid);
+                else ans = mid;
+                diff = temp;
             }
+
+            if(newSum >= target) r = mid - 1;
+            else l = mid + 1;
         }
         return ans;
     }
