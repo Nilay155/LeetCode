@@ -2,12 +2,13 @@ class Solution {
 public:
     int findCenter(vector<vector<int>>& edges) {
         int n = edges.size();
-        vector<int> inDegree(n + 2,0);
+        int u = edges[0][0], v = edges[0][1];
 
-        for(auto edge : edges) inDegree[edge[0]] += 1, inDegree[edge[1]] += 1;
-        for(int node = 1 ; node <= n + 1 ; node++) {
-            if(inDegree[node] == n)
-                return node;
+        for(int i = 1 ; i < n ; i++) {
+            int nu = edges[i][0], nv = edges[i][1];
+
+            if(nu == u || nv == u) return u;
+            if(nu == v || nv == v) return v;
         }
         return -1;
     }
