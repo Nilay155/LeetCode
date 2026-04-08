@@ -8,7 +8,6 @@ public:
             for(int j = i + 1 ; j < n ; j++) {
                 int sum = nums[i] + nums[j];
                 int k = lower_bound(nums.begin() + j + 1,nums.end(), sum) - nums.begin();
-                
                 count += (k - j - 1);
             }
         }
