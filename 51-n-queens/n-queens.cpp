@@ -1,53 +1,48 @@
 class Solution {
 private:
-    bool check(vector<string> &str,int n,int i,int j) {
-
-        // Top Direction
-        for(int k = i-1 ; k >= 0 ; k--) {
-            if(str[k][j] == 'Q') return false; 
-        }
-        // Top-Left Direction
-        int x = i-1, y = j-1;
-        while(x >= 0 && y >= 0) {
-            if(str[x][y] == 'Q') return false;
-            x -= 1,y -= 1;
-        }
-        x = i-1,y = j+1;
-        while(x >= 0 && y < n) {
-            if(str[x][y] == 'Q') return false;
-            x -= 1, y += 1;
-        }
-        return true;
-    }
+    vector<bool> columns,leftDiagonal,rightDiagonal;
 private:
-    void solve(vector<vector<string>> &ans,vector<string> &str,int n,int i) {
-        if(i >= n) {
-            ans.push_back(str);
+    bool checkAttacks(int i,int j,int n) {
+        if(!columns[j] && !rightDiagonal[i + j] && !leftDiagonal[n + i - j - 1])
+            return true;
+        return false;
+    }
+    void placeQueens(int i,int n,vector<string> &res,vector<vector<string>> &ans) {
+        if(i == n) {
+            ans.push_back(res);
             return ;
         }
 
         for(int j = 0 ; j < n ; j++) {
 
-            if(check(str,n,i,j)) {
-                str[i][j] = 'Q';
-                solve(ans,str,n,i+1);
-                str[i][j] = '.';
-            } 
+            if(checkAttacks(i,j,n)) {
+                res[i][j] = 'Q';
+                columns[j] = true;
+                rightDiagonal[i + j] = true;
+                leftDiagonal[n + i - j - 1] = true;
+
+                placeQueens(i + 1,n,res,ans);
+
+                res[i][j] = '.';
+                columns[j] = false;
+                rightDiagonal[i + j] = false;
+                leftDiagonal[n + i - j - 1] = false;
+            }
         }
     }
-
 public:
     vector<vector<string>> solveNQueens(int n) {
         vector<vector<string>> ans;
-        string s;
+        
+        string str;
+        str.append(n,'.');
+        vector<string> res(n,str);
 
-        int t = n;
-        while(t--) {
-            s.push_back('.');
-        }
-        vector<string> str(n,s);
+        columns = vector<bool> (n,false);
+        leftDiagonal = vector<bool> (2*n - 1,false);
+        rightDiagonal = vector<bool> (2*n - 1,false);
 
-        solve(ans,str,n,0);
+        placeQueens(0,n,res,ans);
         return ans;
     }
 };
