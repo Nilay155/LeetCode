@@ -1,29 +1,50 @@
-// Recursive Solution
-// [1,3,5,1]
-// (i,k,j)=> O(n^2 * k)
-
-// Optimal Solution
-// [1,3,5,1]
-
-// pair weights => [4,8,6] => [4,6,8]
+typedef long long ll;
 class Solution {
 private:
-public:
-    long long putMarbles(vector<int>& weights, int k) {
-        int n = weights.size();
+    ll f(vector<int> &w,int k) {
+        int n = w.size();
 
-        vector<int> nums;
-        for(int i = 0 ; i < n-1 ; i++) {
-            nums.push_back(weights[i] + weights[i+1]);
+        vector<vector<ll>> dp(k,vector<ll> (n,0));
+        for(int i = 0 ; i < n ; i++) {
+            dp[0][i] = w[0] + w[i];
         }
-        long long maxi = 0;
-        long long mini = 0;
+
+        for(int K = 1 ; K < k ; K += 1) {
+            for(int i = K ; i < n ; i += 1) {
+
+                // If I Break at index i
+                ll prev = dp[K - 1][i - 1];
+                ll curr = w[i] + w[n - 1]; // the remaining subarray
+                dp[K][i] = prev + curr;
+            }
+        }
+        ll maxi = -1e18,mini = 1e18;
+        for(int i = k - 1 ; i < n ; i++) {
+            mini = min(mini,dp[k - 1][i]);
+            maxi = max(maxi,dp[k - 1][i]);
+        }
+        return maxi - mini;
+    }
+public:
+    long long putMarbles(vector<int>& w, int k) {
+        int n = w.size();
+        // O(n*n*k) -> DP is not a feasable solution
+        if(k == 1) return 0;
+
+        vector<ll> partitionSums;
+        for(int i = 0 ; i < n - 1 ; i++) 
+            partitionSums.push_back(w[i] + w[i + 1]);
         
-        sort(nums.begin(),nums.end());
-        for(int i = 0 ; i < k-1 ; i++) {
-            mini += nums[i];
-            maxi += nums[n-i-2];
+        sort(partitionSums.begin(),partitionSums.end());
+        ll mini = 0;
+        for(int i = 0 ; i < k - 1 ; i++) {
+            mini += partitionSums[i];
         }
-        return maxi-mini;
+        sort(partitionSums.rbegin(),partitionSums.rend());
+        ll maxi = 0;
+        for(int i = 0 ; i < k - 1 ; i++) {
+            maxi += partitionSums[i];
+        }
+        return maxi - mini;
     }
 };
