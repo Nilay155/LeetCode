@@ -40,7 +40,7 @@ public:
         for(int i = 0 ; i < k - 1 ; i++) {
             mini += partitionSums[i];
         }
-        sort(partitionSums.rbegin(),partitionSums.rend());
+        reverse(partitionSums.begin(),partitionSums.end());
         ll maxi = 0;
         for(int i = 0 ; i < k - 1 ; i++) {
             maxi += partitionSums[i];
