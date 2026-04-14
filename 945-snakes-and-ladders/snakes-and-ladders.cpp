@@ -1,54 +1,42 @@
 class Solution {
-private:
-    int bfs(vector<vector<int>> &board,unordered_map<int,pair<int,int>> &mpp) {
-        queue<pair<int,int>> q;
-        vector<bool> vis(mpp.size()+1,false);
+public:
+    int snakesAndLadders(vector<vector<int>>& board) {
         int n = board.size();
+        int maxJump = n*n, k = 1;
+        vector<pair<int,int>> indexes(n*n + 1);
+        bool flag = true;
+        for(int i = n - 1  ; i >= 0 ; i--) {
+            if(flag) for(int j = 0 ; j < n ; j++) indexes[k++] = {i,j};
+            else for(int j = n - 1 ; j >= 0 ; j--) indexes[k++] = {i,j};
+            flag = !flag;
+        }
+
+        queue<pair<int,int>> q;
+        vector<bool> vis(n * n + 1,false);
         q.push({1,0});
         vis[1] = true;
 
         while(!q.empty()) {
-            auto [top,hops] = q.front(); q.pop();
+            auto [currPosition,moves] = q.front(); q.pop();
+            if(currPosition == n*n) 
+                return moves;
+            
+            for(int jump = 1 ; jump <= 6 && currPosition + jump <= n*n ; jump += 1) {
+                int nextMove = jump + currPosition;
 
-            if(top == n*n) return hops;
-
-            for(int k = top+1 ; k <= min(top+6,n*n) ; k++) {
-                auto [x,y] = mpp[k];
-                if(vis[k]) continue;
-
+                auto [x,y] = indexes[nextMove];
                 if(board[x][y] != -1) {
-                    vis[k] = true;
-                    q.push({board[x][y],hops+1});
+                    int newPosition = board[x][y];
+                    if(vis[newPosition]) continue;
+                    vis[newPosition] = true;
+                    q.push({newPosition,moves + 1});
                 } else {
-                    vis[k] = true;
-                    q.push({k,hops+1});
+                    if(vis[nextMove]) continue;
+                    vis[nextMove] = true;
+                    q.push({nextMove,moves + 1});
                 }
             }
         }
         return -1;
-    }
-private:
-    int dijkstra(vector<vector<int>> &board,unordered_map<int,pair<int,int>> &mpp) {
-        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
-        vector<int> dist(mpp.size()+1,INT_MAX);
-        int n = board.size();
-        return -1;
-    }
-public:
-    int snakesAndLadders(vector<vector<int>>& board) {
-        unordered_map<int,pair<int,int>> mpp;
-        int n = board.size();
-
-        int count = 1;
-        bool flag = true;
-        for(int i = n-1; i >= 0 ; i--) {
-            for(int j = 0 ; j < n ; j++) {
-                if(flag) mpp[count++] = {i,j};
-                else mpp[count++] = {i,n-j-1};
-            }
-            flag = !flag;
-        }
-        return bfs(board,mpp);
-        // dijkstra(board,mpp);
     }
 };
