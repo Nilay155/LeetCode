@@ -1,28 +1,35 @@
 typedef long long ll;
 class Solution {
 private:
-    vector<vector<vector<ll>>> dp;
-    ll f(vector<int> &r,vector<vector<int>> &ff,int i,int j,int l) {
+    vector<vector<ll>> dp;
+    ll f(vector<int> &r,vector<int> &nums,int i,int j) {
 
         if(i >= r.size()) return 0;
-        if(j >= ff.size()) return 1e18;
-        if(dp[i][j][l] != -1) 
-            return dp[i][j][l];
+        if(j >= nums.size()) return 1e18;
 
-        ll minCost = 1e18;
-        if(l > 0) {
-            ll distance = abs(r[i] - ff[j][0]);
-            minCost = min(minCost,distance + f(r,ff,i + 1,j,l - 1));
-        }
-        minCost = min(minCost,0 + f(r,ff,i,j + 1,j + 1 < ff.size() ? ff[j + 1][1] : 0));
-        return dp[i][j][l] = minCost;
+        if(dp[i][j] != -1) 
+            return dp[i][j];
+
+        ll minCost = f(r,nums,i,j + 1);
+        ll distance = llabs(r[i] - nums[j]);
+
+        minCost = min(minCost,distance + f(r,nums,i + 1,j + 1));
+        return dp[i][j] = minCost;
     }
 public:
     long long minimumTotalDistance(vector<int>& r, vector<vector<int>>& ff) {
         int n = r.size(), m = ff.size();
         sort(r.begin(),r.end());
-        sort(ff.begin(),ff.end());
-        dp = vector<vector<vector<ll>>> (n,vector<vector<ll>>(m,vector<ll>(n + 1, -1)));
-        return f(r,ff,0,0,ff[0][1]);
+
+        vector<int> nums;
+        for(int i = 0 ; i < m ; i++) 
+            for(int j = 0 ; j < ff[i][1] ; j++)
+                nums.push_back(ff[i][0]);
+        
+        sort(nums.begin(),nums.end());
+        m = nums.size();
+        // for(int f : nums) cout << f << "   ";
+        dp = vector<vector<ll>>(n,vector<ll>(m,-1));
+        return f(r,nums,0,0);
     }
 };
