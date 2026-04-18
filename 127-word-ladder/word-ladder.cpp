@@ -1,31 +1,36 @@
 class Solution {
 public:
     int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
-        unordered_set<string> dict(wordList.begin(), wordList.end());
-        queue<string> todo;
-        todo.push(beginWord);
-        int ladder = 1;
-        while (!todo.empty()) {
-            int n = todo.size();
-            for (int i = 0; i < n; i++) {
-                string word = todo.front();
-                todo.pop();
-                if (word == endWord) {
-                    return ladder;
-                }
-                dict.erase(word);
-                for (int j = 0; j < word.size(); j++) {
-                    char c = word[j];
-                    for (int k = 0; k < 26; k++) {
-                        word[j] = 'a' + k;
-                        if (dict.find(word) != dict.end()) {
-                            todo.push(word);
+        int n = wordList.size();
+
+        unordered_map<string,bool> mapper;
+        for(auto str : wordList) mapper[str] = true;
+        
+        queue<string> q;
+        unordered_map<string,bool> vis;
+        vis[beginWord] = true;
+        q.push(beginWord);
+
+        int count = 1;
+        while(!q.empty()) {
+            int sz = q.size();
+            for(int k = 0 ; k < sz ; k++) {
+                string str = q.front(); q.pop();
+                if(str == endWord)
+                    return count;
+                for(int l = 0 ; l < str.length() ; l++) {
+                    for(char ch = 'a'; ch <= 'z' ; ch++) {
+                        string nextStr = str;
+                        nextStr[l] = ch;
+                        if(mapper.find(nextStr) != mapper.end() && !vis[nextStr]) {
+                            vis[nextStr] = true;
+                            q.push(nextStr);
                         }
-                     }
-                    word[j] = c;
+                    }
                 }
+            
             }
-            ladder++;
+            count += 1;
         }
         return 0;
     }
