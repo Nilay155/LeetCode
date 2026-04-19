@@ -102,7 +102,6 @@ public:
                 }
             }
         }
-        // cout << forward[0][3]  << "  " << backward[1][3] << "\n";
         return ans;
     }
 };
