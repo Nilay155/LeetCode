@@ -13,11 +13,14 @@ private:
         return (x2 - x1) * (y2 - y1);
     }
 public:
-    int computeArea(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2) {
+    int computeArea(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2) {   
+        ios::sync_with_stdio(false);
+        cin.tie(nullptr);
+        
         int A = rectangleArea(ax1,ay1,ax2,ay2);
         int B = rectangleArea(bx1,by1,bx2,by2);
         int AB = overlappedArea(ax1,ay1,ax2,ay2,bx1,by1,bx2,by2);
-        cout << A << " : " << B << " : " << AB << "\n";
+        // cout << A << " : " << B << " : " << AB << "\n";
         return A + B - AB;
     }
 };
