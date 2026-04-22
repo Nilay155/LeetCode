@@ -12,50 +12,44 @@ private:
         integerString[6] = "six",firstChar[6] = 'x';
         integerString[7] = "seven",firstChar[7] = 's';
         integerString[8] = "eight",firstChar[8] = 'g';
-        integerString[9] = "nine",firstChar[9] = 'n';
+        integerString[9] = "nine",firstChar[9] = 'i';
         return ;
     }
-    bool firstCheck(unordered_map<char,int> &charCounts,int ch) {
+    char uniqueChar(unordered_map<char,int> &charCounts,int ch) {
         char c = firstChar[ch];
         if(charCounts[c] > 0)
-            return true;
-        return false;
-    }
-    bool secondCheck(unordered_map<char,int> &charCounts,int ch) {
-        string str = integerString[ch];
-        for(int i = 0 ; i < str.length() ; i++) {
-            if(charCounts[str[i]] <= 0)
-                return false;
-        }
-        return true;
-    }
-    void decrementCount(unordered_map<char,int> &charCounts,int ch) {
-        string str = integerString[ch];
-        for(int i = 0 ; i < str.length() ; i++) {
-            charCounts[str[i]] -= 1;
-        }
-        return ;
+            return c;
+        return '*';
     }
 public:
     string originalDigits(string s) {
         int n = s.length();
         mapping();
         unordered_map<char,int> charCounts;
+        charCounts['*'] = 0;
         for(char ch : s) charCounts[ch] += 1;
 
         string ans;
         // first unique guaranteed
         for(int k = 0 ; k <= 8 ; k += 2) {
-            while(firstCheck(charCounts,k) && secondCheck(charCounts,k)) {
-                decrementCount(charCounts,k);
-                ans.push_back('0' + k);
+            int count = charCounts[uniqueChar(charCounts,k)];
+            if(count > 0) {
+                ans.append(count,'0' + k);
+                string str = integerString[k];
+                for(int i = 0 ; i < str.length() ; i++) {
+                    charCounts[str[i]] -= count;
+                }
             }
         }
         // second unique
         for(int k = 1 ; k <= 9 ; k += 2) {
-            while(firstCheck(charCounts,k) && secondCheck(charCounts,k)) {
-                decrementCount(charCounts,k);
-                ans.push_back('0' + k);
+            int count = charCounts[uniqueChar(charCounts,k)];
+            if(count > 0) {
+                ans.append(count,'0' + k);
+                string str = integerString[k];
+                for(int i = 0 ; i < str.length() ; i++) {
+                    charCounts[str[i]] -= count;
+                }
             }
         }
         sort(ans.begin(),ans.end());
