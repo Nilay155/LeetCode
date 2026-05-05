@@ -29,12 +29,14 @@ public:
         // }
 
         // O(n) optimization
-        multiset<int> mst;
+        // multiset<int> mst;
+        unordered_map<int,int> freq;
         for(int i = 0 ; i < n ; i++) {
-            mst.insert(arr[i]);
-            while(j <= i && mst.find(nums[j]) != mst.end()) {
-                auto it = mst.find(nums[j]);
-                mst.erase(it);
+            freq[arr[i]] += 1;
+            while(j <= i && freq.find(nums[j]) != freq.end()) {
+                freq[nums[j]] -= 1;
+                if(freq[nums[j]] == 0)
+                    freq.erase(nums[j]);
                 j += 1;
             }
             if(j > i) chunks += 1;
