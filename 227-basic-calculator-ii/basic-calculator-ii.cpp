@@ -1,72 +1,32 @@
 class Solution {
-private:
-    unordered_map<char,int> precedence;
-public:
-    Solution() {
-        precedence.clear();
-        precedence['-'] = precedence['+'] = 1;
-        precedence['*'] = precedence['/'] = 2;
-    }
 public:
     int calculate(string s) {
         int n = s.length();
-        stack<int> numbers;
-        stack<char> operators;
+        int curr = 0, last = 0, ans = 0;
+        char opr = '+';
+        for(int i = 0 ; i < n ; i++) {
 
-        int i = 0;
-        while(i < n) {
-            int currNum = 0;
-            bool flag = false;
-            while(i < n && isdigit(s[i])) {
-                flag = true;
-                currNum = currNum * 10 + (s[i] - '0');
-                i += 1;
-            }
-            if(flag)
-                numbers.push(currNum);
-
-            // Ignoring Spaces
-            while(i < n && s[i] == ' ') {
-                i += 1;
+            if(isdigit(s[i])) {
+                curr = curr * 10 + (s[i] - '0');
             }
 
-            // Handling Operators
-            if(i < n && !isdigit(s[i]) && s[i] != ' ') {
-                if(operators.empty()) {
-                    operators.push(s[i]);
+            if((!isdigit(s[i]) && s[i] != ' ') || i == s.length() - 1) {
+
+                if(opr == '*') {
+                    last = last * curr;
+                } else if(opr == '/') {
+                    last = last / curr;
+                } else if(opr == '-') {
+                    ans += last;
+                    last = -curr;
                 } else {
-                    int p1 = precedence[operators.top()];
-                    int p2 = precedence[s[i]];
-
-                    while(p1 >= p2) {
-                        int n2 = numbers.top(); numbers.pop();
-                        int n1 = numbers.top(); numbers.pop();
-                        char opr = operators.top(); operators.pop();
-
-                        if(opr == '-') numbers.push(n1 - n2);
-                        else if(opr == '+') numbers.push(n1 + n2);
-                        else if(opr == '*') numbers.push(n1 * n2);
-                        else numbers.push(n1 / n2);
-
-                        if(!operators.empty()) p1 = precedence[operators.top()];
-                        else p1 = 0;
-                    }
-                    operators.push(s[i]);
+                    ans += last;
+                    last = curr;
                 }
-                i += 1;
+                curr = 0;
+                opr = s[i];
             }
         }
-        while(!operators.empty()) {
-            int n2 = numbers.top(); numbers.pop();
-            int n1 = numbers.top(); numbers.pop();
-            char opr = operators.top(); operators.pop();
-                        
-
-            if(opr == '-') numbers.push(n1 - n2);
-            else if(opr == '+') numbers.push(n1 + n2);
-            else if(opr == '*') numbers.push(n1 * n2);
-            else numbers.push(n1 / n2);
-        }
-        return numbers.top();
+        return ans + last;
     }
 };
