@@ -2,25 +2,28 @@ class Solution {
 public:
     void nextPermutation(vector<int>& nums) {
         int n = nums.size();
-    int u = -1, v = -1;
-    
-    for(int i = n-2 ; i >= 0 ; i--) {
-        if(nums[i] < nums[i+1]) {
-            u = i, v = i+1;
-            break;
+
+        int index = -1;
+        for(int i = n - 2 ; i >= 0 ; i--) {
+            if(nums[i] < nums[i + 1]) {
+                // desc order broken
+                index = i;
+                break;
+            }
         }
-    }
-    if(u == -1) {
-        reverse(nums.begin(),nums.end());
-        return;
-    }
-    int index = -1;
-    for(int k = v ; k < n ; k++) {
-        if(nums[k] > nums[u]) {
-            index = k;
+        if(index == -1) {
+            reverse(nums.begin(),nums.end());
+            return ;
         }
-    }
-    swap(nums[index],nums[u]);
-    sort(nums.begin() + v,nums.end());
+
+        // finding the nextgreater element than nums[i]
+        int nge = -1;
+        for(int i = index + 1 ; i < n ; i++) {
+            if(nums[i] > nums[index]) nge = i;
+        }
+        swap(nums[index],nums[nge]);
+
+        reverse(nums.begin() + index + 1,nums.end());
+        return ;
     }
 };
