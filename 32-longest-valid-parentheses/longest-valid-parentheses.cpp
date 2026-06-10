@@ -1,42 +1,40 @@
 class Solution {
 public:
-    int longestValidParentheses(string s) {
-        int n = s.length();
-        stack<pair<char,int>> st;
-        vector<int> dp(n);
+    int longestValidParentheses(string str) {
+        int n = str.length();
 
+        vector<pair<int,int>> pairs;
+        stack<int> st;
         for(int i = 0 ; i < n ; i++) {
-
-            if(s[i] == '(') {
-                st.push({s[i],i});
-            } else {
-                if(!st.empty()) {
-                    st.pop();
-                } else {
-                    dp[i] = -1;
-                }
+            if(str[i] == ')' && !st.empty()) {
+                pairs.push_back({st.top(),i});
+                st.pop();
+            } else if(str[i] == '(') {
+                st.push(i);
             }
         }
-        while(!st.empty()) {
-            dp[st.top().second] = -1;
-            st.pop();
+        sort(pairs.begin(),pairs.end());
+        if(pairs.empty())
+            return 0;
+
+        vector<pair<int,int>> result;
+        int s = pairs[0].first, e = pairs[0].second;
+        for(int i = 1 ; i < pairs.size() ; i++) {
+            int ns = pairs[i].first, ne = pairs[i].second;
+
+            if(ns <= e + 1) {
+                e = max(e,ne);
+            } else {
+                result.push_back({s,e});
+                s = ns,e = ne;
+            }
         }
-        vector<int> temp;
-        for(int i = 0 ; i < n ; i++) {
-            if(dp[i] == -1) temp.push_back(i);
-        }
+        result.push_back({s,e});
 
         int ans = 0;
-        int m = temp.size();
-        
-        if(n == 0) return ans;
-        if(m == 0) return n;
-
-        for(int i = 0 ; i < m-1 ; i++) {
-            ans = max(ans,temp[i+1]-temp[i]-1);
+        for(int i = 0 ; i < result.size() ; i++) {
+            ans = max(ans,result[i].second - result[i].first + 1);
         }
-        ans = max(ans,temp[0]);
-        ans = max(ans,n-temp[m-1]-1);
         return ans;
     }
 };
