@@ -21,7 +21,6 @@ public:
         int s = pairs[0].first, e = pairs[0].second;
         for(int i = 1 ; i < pairs.size() ; i++) {
             int ns = pairs[i].first, ne = pairs[i].second;
-
             if(ns <= e + 1) {
                 e = max(e,ne);
             } else {
