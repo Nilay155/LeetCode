@@ -1,92 +1,51 @@
 class Solution {
 private:
-    // int dp[31][31][31];
-    bool equalStr(string &s,string &t,int i,int j,int l) {
-        return s.compare(i,l,t,j,l) == 0;
+    unordered_map<string,bool> dp;
+
+    string generateKey(string s,string t) {
+        return s + "#" + t;
     }
-    // bool f(string &s,string &t,int i,int j,int l) {
 
-    //     if(dp[i][j][l] != -1) return dp[i][j][l];
+    bool f(string s,string t) {
+        if(s == t)
+            return true;
 
-    //     if(equalStr(s,t,i,j,l)) return dp[i][j][l] = 1;
+        if(s.length() != t.length())
+            return false;
 
-    //     vector<int> count(26,0);
+        string key = generateKey(s,t);
 
-    //     for(int x = 0 ; x < l ; x++) {
-    //         count[s[i + x]-'a']++;
-    //         count[t[j + x]-'a']--;
-    //     }
+        if(dp.count(key))
+            return dp[key];
 
-    //     for(int cnt : count) {
-    //         if(cnt != 0) return dp[i][j][l] = 0;
-    //     }
+        // string a = s, b = t;
+        // sort(a.begin(), a.end());
+        // sort(b.begin(), b.end());
 
-    //     for(int k = 1 ; k < l ; k++) {
+        // if(a != b)
+        //     return dp[key] = false;
 
-    //         if(f(s,t,i,j,k) & f(s,t,i+k,j+k,l-k)) return dp[i][j][l] = true; // no-swap
+        int n = s.length();
 
-    //         if(f(s,t,i+k,j,l-k) & f(s,t,i,j+l-k,k)) return dp[i][j][l] = true;; // swap
-    //     }
-    //     return dp[i][j][l] = false;
-    // }
+        for(int i = 1; i < n; i++) {
 
-    bool anagramCheck(string &s,string &t,int i,int j,int l) {
-        vector<int> count(26,0);
+            bool noSwap =
+                f(s.substr(0,i), t.substr(0,i)) &&
+                f(s.substr(i), t.substr(i));
 
-        for(int x = 0 ; x < l ; x++) {
-            count[s[i + x]-'a']++;
-            count[t[j + x]-'a']--;
+            bool swap =
+                f(s.substr(0,i), t.substr(n-i,i)) &&
+                f(s.substr(i), t.substr(0,n-i));
+
+            if(noSwap || swap)
+                return dp[key] = true;
         }
 
-        for(int cnt : count) {
-            if(cnt != 0) return false;
-        }
-        return true;
-    
-
+        return dp[key] = false;
     }
+
 public:
     bool isScramble(string s1, string s2) {
-        int n = s1.length(), m = s2.length();
-        if(n != m) return false;
-
-        // memset(dp,-1,sizeof(dp));
-        // return f(s1,s2,0,0,n);
-
-        vector<vector<vector<bool>>> dp(n+1,vector<vector<bool>>(n+1,vector<bool>(n+1,false)));
-
-        for(int l = 0 ; l <= n ; l++) {
-            // i se l => len
-            for(int i = 0 ; i+l <= n ; i++) {
-                // j se l => len
-                for(int j = 0 ; j+l <= n ; j++) {
-
-                    if(equalStr(s1,s2,i,j,l))
-                        dp[l][i][j] = true;
-                }   
-            }
-        }
-
-        for(int l = 1 ; l <= n ; l++) {
-            for(int i = 0 ; i + l <= n ; i++) {
-                for(int j = 0 ; j + l <= n ; j++) {
-                    // checking if they are anagrams
-                    if(anagramCheck(s1,s2,i,j,l)) {
-
-                        for(int k = 1; k < l ; k++) {
-                            
-                            // no-swapping
-                            if(dp[l - k][i + k][j + k] && dp[k][i][j])
-                                dp[l][i][j] = true;
-                            
-                            // swapping
-                            if(dp[l - k][i + k][j] && dp[k][i][j + l - k])
-                                dp[l][i][j] = true;
-                        }
-                    }
-                }
-            }
-        }
-        return dp[n][0][0];
+        return f(s1,s2);
     }
 };
