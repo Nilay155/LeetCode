@@ -20,7 +20,7 @@ private:
 
 
         int n = s.length();
-
+        bool ans = false;
         for(int i = 1; i < n; i++) {
 
             bool noSwap =
@@ -31,11 +31,10 @@ private:
                 f(s.substr(0,i), t.substr(n-i,i)) &&
                 f(s.substr(i), t.substr(0,n-i));
 
-            if(noSwap || swap)
-                return dp[key] = true;
+            ans = ans | noSwap | swap;
         }
 
-        return dp[key] = false;
+        return dp[key] = ans;
     }
 
 public:
