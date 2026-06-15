@@ -10,20 +10,14 @@ private:
         if(s == t)
             return true;
 
-        if(s.length() != t.length())
-            return false;
+        // if(s.length() != t.length())
+        //     return false;
 
         string key = generateKey(s,t);
 
         if(dp.count(key))
             return dp[key];
 
-        // string a = s, b = t;
-        // sort(a.begin(), a.end());
-        // sort(b.begin(), b.end());
-
-        // if(a != b)
-        //     return dp[key] = false;
 
         int n = s.length();
 
