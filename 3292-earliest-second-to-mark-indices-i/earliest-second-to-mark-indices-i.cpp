@@ -9,11 +9,13 @@ public:
         // Not Possible
         if(sum >= m || n > m)
             return -1;
-        
-        for(int s = 1 ; s <= m ; s++) {
-            // cout << 1 << "\n";
+
+        int l = 1, r = m;
+        while(l <= r) {
+            int mid = (l + r) >> 1;
+   
             vector<int> lastPosition(n,m);
-            for(int i = 0 ; i < s ; i++) {
+            for(int i = 0 ; i < mid ; i++) {
                 int c = changeIndices[i];
                 lastPosition[c - 1] = i;
             }
@@ -22,11 +24,10 @@ public:
             for(int i = 0 ; i < n ; i++) 
                 if(lastPosition[i] != m)
                     positions.push_back({lastPosition[i],nums[i]});
-            
-            if(positions.size() < n || sum + n > s)
-                continue;
+        
             sort(positions.begin(),positions.end());
-            long long int timeConsumed = 0, count = 0;
+            long long int timeConsumed = 0;
+            int count = 0;
             for(int i = 0 ; i < (int) positions.size() ; i++) {
                 auto [pos,val] = positions[i];
                 if(pos + 1 - timeConsumed  > val) {
@@ -37,10 +38,13 @@ public:
                 }
             }
 
-            if(count == n)
-                return s;
+            if(count >= n) {
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
         }
-        return -1;
+        return l == m+1 ? -1 : l;
 
     }
 };
