@@ -1,32 +1,45 @@
 class Solution {
-public:
-    bool solve(vector<int> &stones,int i,int k,int n,unordered_map<int,int> &mpp,
-    vector<vector<int>> &dp) {
-        if(i >= n-1) return 1;
-        if(dp[i][k] != -1) return dp[i][k];
+private:
+    unordered_map<int,int> vis;
+    unordered_map<int,unordered_map<int,int>> dp;
+    bool f(vector<int> &stones,int i,int k,int &n) {
+        if(i >= n-1)
+            return true;
+        if(k <= 0)
+            return false;
+        if(dp.find(i) != dp.end() && dp[i].find(k) != dp[i].end())
+            return dp[i][k];
 
-        int op0 = 0;
-        int op1 = 0;
-        int op2 = 0;
+        int jump1 = stones[i] + k, 
+            jump2 = stones[i] + k - 1,
+            jump3 = stones[i] + k + 1;
 
-        if (mpp.find(stones[i] + k) != mpp.end()) {
-            op0 = solve(stones,mpp[stones[i] + k], k,n,mpp,dp);
+        bool ans = false;
+        if(vis.find(jump1) != vis.end()) {
+            int j = vis[jump1];
+            ans = ans | f(stones,j,k,n);
+        } 
+        if(vis.find(jump2) != vis.end()) {
+            int j = vis[jump2];
+            ans = ans | f(stones,j,k - 1,n);
         }
-        if(mpp.find(stones[i] + k + 1) != mpp.end()) {
-            op1 = solve(stones,mpp[stones[i] + k + 1],k+1,n,mpp,dp);
+        if(vis.find(jump3) != vis.end()) {
+            int j = vis[jump3];
+            ans = ans | f(stones,j,k + 1,n);
         }
-        if(k > 1 && mpp.find(stones[i] + k - 1) != mpp.end()) {
-            op2 = solve(stones,mpp[stones[i] + k - 1],k-1,n,mpp,dp);
-        }
-        return dp[i][k] =  op1 || op2 || op0;
+        return dp[i][k] = ans;
     }
+public:
     bool canCross(vector<int>& stones) {
         int n = stones.size();
-        if(stones[1] != 1 || stones[0] != 0) return false;
-        unordered_map<int,int> mpp;
-        for(int i = 0 ; i < n ; i++) mpp[stones[i]] = i;
-
-        vector<vector<int>> dp(n,vector<int>(2001,-1));
-        return solve(stones,1,1,n,mpp,dp);
+        int i = 1;
+        // stones[0] == 0
+        if(stones[1] > 1) 
+            return false;
+        
+        vis.clear();
+        for(int i = 2 ; i < n ; i++) 
+            vis[stones[i]] = i;
+        return f(stones,i,1,n);
     }
 };
