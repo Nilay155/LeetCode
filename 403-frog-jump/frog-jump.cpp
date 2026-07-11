@@ -1,13 +1,15 @@
 class Solution {
 private:
     unordered_map<int,int> vis;
-    unordered_map<int,unordered_map<int,int>> dp;
+    int dp[2001][2001];
     bool f(vector<int> &stones,int i,int k,int &n) {
         if(i >= n-1)
             return true;
         if(k <= 0)
             return false;
-        if(dp.find(i) != dp.end() && dp[i].find(k) != dp[i].end())
+        // if(dp.find(i) != dp.end() && dp[i].find(k) != dp[i].end())
+        //     return dp[i][k];
+        if(dp[i][k] != -1)
             return dp[i][k];
 
         int jump1 = stones[i] + k, 
@@ -40,6 +42,7 @@ public:
         vis.clear();
         for(int i = 2 ; i < n ; i++) 
             vis[stones[i]] = i;
+        memset(dp,-1,sizeof(dp));
         return f(stones,i,1,n);
     }
 };
