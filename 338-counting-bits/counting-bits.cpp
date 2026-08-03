@@ -1,19 +1,15 @@
 class Solution {
 public:
     vector<int> countBits(int n) {
-        vector<int> dp(n+1);
-        if(n == 0) return {0};
-        if(n == 1) return {0,1};
-        dp[0] = 0;
-        dp[1] = 1;
-        dp[2] = 1;
+        vector<int> dp(n + 1,0);
 
-        for(int i = 3 ; i <= n ; i++) {
-            if(i&1) {
-                dp[i] = dp[i/2] + 1;
-            } else {
-                dp[i] = dp[i/2];
+        for(int i = 0 ; i <= n ; i++) {
+            int cnt = 0;
+            for(int b = 0 ; b < 32 ; b++) {
+                if(i & (1 << b)) 
+                    cnt += 1;
             }
+            dp[i] = cnt;
         }
         return dp;
     }
