@@ -1,69 +1,54 @@
 class Solution {
-private:
-    static bool cmp(string &a,string &b) {
-        if(a < b) return true;
-        else return false;
-    }
 public:
     vector<string> watchedVideosByFriends(vector<vector<string>>& watchedVideos, vector<vector<int>>& friends, int id, int level) {
-        int n = friends.size();
+        int n = watchedVideos.size();
+        vector<vector<int>> adjList(n);
 
-        // Graph-Creation
-        vector<vector<int>> adjMatrix(n,vector<int>(n,0));
         for(int i = 0 ; i < n ; i++) {
-            for(int j = 0 ; j < friends[i].size() ; j++) {
-                adjMatrix[i][friends[i][j]] = 1;
-                // adjMatrix[friends[i][j]][i] = 1;
+            for(int j = 0 ; j < (int) friends[i].size() ; j++) {
+                adjList[i].push_back(friends[i][j]);
             }
         }
 
-        unordered_map<string,int> mpp;
-        vector<int> vis(n,0);
+        vector<bool> vis(n,false);
+        vis[id] = true;
 
-        int lvl = 0;
         queue<int> q;
         q.push(id);
-        vis[id] = 1;
-        while(!q.empty()) {
+
+        while(!q.empty() && level--) {
             int sz = q.size();
-
-            if(lvl == level) {
-                for(int i = 0 ; i < sz ; i++) {
-                    int node = q.front(); q.pop();
-                    for(int j = 0 ; j < watchedVideos[node].size() ; j++) {
-                        mpp[watchedVideos[node][j]]++;
+            while(sz--) {
+                int f = q.front(); q.pop();
+                for(int j = 0 ; j < (int) adjList[f].size() ; j++) {
+                    if(!vis[adjList[f][j]]) {
+                        vis[adjList[f][j]] = true;
+                        q.push(adjList[f][j]);
                     }
                 }
             }
-            if(q.empty()) break;
-            for(int i = 0 ; i < sz ; i++) {
-                int node = q.front(); q.pop();
-
-                for(int j = 0 ; j < n ; j++) {
-
-                    if(adjMatrix[node][j] && !vis[j]) {
-                        q.push(j);
-                        vis[j] = 1;
-                    }
-                }
-            }
-            lvl += 1;
         }
 
-        map<int,vector<string>> map;
-        for(auto& it : mpp) {
-            map[it.second].push_back(it.first);
-        }
-
-        for(auto& it : map) {
-            sort(it.second.begin(),it.second.end(),cmp);
-        }
-        vector<string> res;
-        for(auto& it : map) {
-            for(int j = 0 ; j < it.second.size(); j++) {
-                res.push_back(it.second[j]);
+        unordered_map<string,int> counts;
+        while(!q.empty()) {
+            int f = q.front(); q.pop();
+            for(int j = 0 ; j < (int) watchedVideos[f].size() ; j++) {
+                counts[watchedVideos[f][j]] += 1;
             }
         }
-        return res;
+        vector<pair<int,string>> arr;
+        for(auto [str,cnt] : counts) {
+            arr.push_back({cnt,str});
+        }
+        sort(arr.begin(),arr.end(),[&](pair<int,string> &A,pair<int,string> &B) {
+            if(A.first == B.first)
+                return A.second < B.second;
+            return A.first < B.first;
+        });
+        vector<string> ans;
+        for(int i = 0 ; i < (int) arr.size() ; i++) {
+            ans.push_back(arr[i].second);
+        }
+        return ans;
     }
 };
