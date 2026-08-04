@@ -1,15 +1,18 @@
+typedef long long ll;
 class Solution {
 public:
     int integerBreak(int n) {
-        vector<int> dp(n+1);
-        dp[1] = 1;
+        
+        vector<ll> dp(n + 1,0);
+        dp[0] = 0, dp[1] = 1;
 
-        for(int i = 2 ; i <= n ; i++) {
-            for(int j = i-1 ; j >= 1 ; j--) {
-                dp[i] = max(dp[i],j * max(i-j,dp[i-j]));
+        for(int k = 2 ; k <= n ; k++) {
+            for(int f = 1 ; f < k ; f++) {
+                ll z = max(dp[k - f],(ll) (k - f));
+                dp[k] = max(dp[k],1LL * f * z);
             }
         }
-
+        for(int k = 1 ; k <= n ; k++) cout << dp[k] << " : ";
         return dp[n];
     }
 };
