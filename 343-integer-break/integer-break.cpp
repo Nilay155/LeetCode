@@ -12,7 +12,7 @@ public:
                 dp[k] = max(dp[k],1LL * f * z);
             }
         }
-        for(int k = 1 ; k <= n ; k++) cout << dp[k] << " : ";
+        // for(int k = 1 ; k <= n ; k++) cout << dp[k] << " : ";
         return dp[n];
     }
 };
