@@ -2,42 +2,39 @@ class Solution {
 public:
     int numberOfAlternatingGroups(vector<int>& colors, int k) {
         int n = colors.size();
-        int ans = 0;
 
-        int l = 0, r = 0;
+        int l = 0,r = 1, groups = 0;
         while(r < n) {
-            // Counting valid windows
-            if(r-l+1 == k) {
-                ans += 1;
+            // l -> indicates the start of the window
+            // same numbers
+            if(colors[r] == colors[r - 1]) {
+                l = r;
+            }
+            if(r - l + 1 == k) {
+                groups += 1;
                 l += 1;
             }
-
-            // Window Handling
-            if(r+1 < n) {
-                if(colors[r] != colors[r+1]) {
-                    r += 1;
-                } else {
-                    r += 1;
-                    l = r;
-                }
-            } else {
-                break;
-            }
+            r += 1;
         }
 
-        // circular pattern
-        while(l < n) {
-            if(n-l+((r+1)%n) == k) {
-                ans += 1;
+        if(colors[n - 1] == colors[0])
+            return groups;
+        
+        if(n - l + 1 == k)
+            groups += 1, l += 1;
+
+        r = 1;
+        while(r < n && l < n) {
+
+            if(colors[r] == colors[r - 1])
+                break;
+            
+            if(r + (n - l) + 1 == k) {
                 l += 1;
+                groups += 1;
             }
-
-            if(colors[r%n] != colors[(r+1)%n]) {
-                r += 1;
-            } else {
-                break;
-            }
+            r += 1;
         }
-        return ans;
+        return groups;
     }
 };
