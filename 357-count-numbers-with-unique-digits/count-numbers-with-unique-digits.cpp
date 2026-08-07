@@ -4,15 +4,11 @@ public:
         if(n == 0)
             return 1;
         int ans = 10;
-        
+        int k = 9,mul = 1;
         for(int i = 2 ; i <= n ; i++) {
-
-            int k = 10, j = i, mul = 1;
-            while(j--) {
-                mul *= (k >= 10 ? 9 : k);
-                k--;
-            }
-            ans += mul;
+            mul *= k;
+            ans += (9 * mul);
+            k--;
         }
         return ans;
     }
