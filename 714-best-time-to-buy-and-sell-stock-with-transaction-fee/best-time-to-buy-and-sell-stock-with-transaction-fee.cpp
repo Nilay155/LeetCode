@@ -1,16 +1,27 @@
 class Solution {
 public:
-    int maxProfit(vector<int>& nums, int fee) {
-        int n = nums.size();
+    int dp[50001][2];
+    int f(vector<int> &prices,int &fee,int i,bool flag,int &n) {
+        if(i >= n)
+            return 0;
+        if(dp[i][flag] != -1)
+            return dp[i][flag];
 
-        vector<vector<int>> dp(n,vector<int>(2));
-        dp[0][0] = -nums[0]; // Buying
-        for(int i = 1 ; i < n ; i++) {
-            // Buying Case
-            dp[i][0] = max(dp[i-1][0],-nums[i] + dp[i-1][1]);
-            // Selling Case
-            dp[i][1] = max(nums[i]-fee+dp[i-1][0],dp[i-1][1]);
+        int ans = 0;
+        if(flag) {
+            // buy option is open
+            ans = max(ans,-prices[i] + f(prices,fee,i + 1,false,n));
+            ans = max(ans,f(prices,fee,i + 1,true,n));
+        } else {
+            // sell option is open
+            ans = max(ans,prices[i] - fee + f(prices,fee,i + 1,true,n));
+            ans = max(ans,f(prices,fee,i + 1,false,n));
         }
-        return dp[n-1][1];
+        return dp[i][flag] = ans;
+    }
+    int maxProfit(vector<int>& prices, int fee) {
+        int m = prices.size();
+        memset(dp,-1,sizeof(dp));
+        return f(prices,fee,0,true,m);
     }
 };
