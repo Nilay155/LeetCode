@@ -1,32 +1,37 @@
 class Solution {
 private:
-    int count[10001];
+    int dp[20001];
+    unordered_map<int,int> count;
+    int f(vector<pair<int,int>> &nums,int i,int &n) {
+
+        if(i >= n)
+            return 0;
+        if(dp[i] != -1)
+            return dp[i];
+
+        int op1 = f(nums,i + 1,n);
+        int op2 = 0;
+        int next = nums[i].first + 1;
+        if(count.count(next)) {
+            op2 = nums[i].first* nums[i].second + f(nums, i + 2,n);
+        } else {
+            op2 = nums[i].first* nums[i].second + f(nums, i + 1,n);
+        }
+        return dp[i] = max(op1,op2);
+    } 
 public:
     int deleteAndEarn(vector<int>& nums) {
-        memset(count,0,sizeof(count));
+        int n = nums.size();
+        count.clear();
+        for(int e : nums) count[e] += 1;
 
-        for(int num : nums) count[num]++;
-        vector<int> arr;
-        for(int i = 1 ; i < 10001 ; i++) 
-            if(count[i] > 0) 
-                arr.push_back(i);
-        
-        int n = arr.size();
-        vector<int> dp(n,0);
-        
-        dp[0] = arr[0] * count[arr[0]];
-
-        if(n > 1 && arr[0]+1 == arr[1]) dp[1] = arr[1] * count[arr[1]];
-        else if(n > 1) dp[1] = arr[1] * count[arr[1]] + dp[0];
-        if(n > 1) dp[1] = max(dp[1],dp[0]);
-
-        for(int i = 2 ; i < n ; i++) {
-            int prev = arr[i-1];
-            int val = 0;
-            if(prev+1 != arr[i]) val = dp[i-1];
-            dp[i] = max({arr[i] * count[arr[i]] + dp[i-2],arr[i] * count[arr[i]] + val,dp[i-1]});
+        vector<pair<int,int>> arr;
+        for(auto [e,c] : count) {
+            arr.push_back({e,c});
         }
-        
-        return dp[n-1];
+        int m = arr.size();
+        sort(arr.begin(),arr.end());
+        memset(dp,-1,sizeof(dp));
+        return f(arr,0,m);
     }
 };
