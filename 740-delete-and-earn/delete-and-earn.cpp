@@ -31,7 +31,22 @@ public:
         }
         int m = arr.size();
         sort(arr.begin(),arr.end());
-        memset(dp,-1,sizeof(dp));
-        return f(arr,0,m);
+        // memset(dp,-1,sizeof(dp));
+        // return f(arr,0,m);
+        vector<int> dp(m,0);
+        dp[0] = arr[0].first * arr[0].second;
+        for(int i = 1 ; i < m ; i++) {
+            int e = arr[i].first, c = arr[i].second;
+            // left
+            int le = arr[i - 1].first;
+            int res = e * c;
+            if(le + 1 != e) {
+                res += dp[i - 1];
+            } else {
+                res += ((i - 2 >= 0 ? dp[i - 2] : 0));
+            }
+            dp[i] = max(res,dp[i - 1]);
+        }
+        return dp[m - 1];
     }
 };
