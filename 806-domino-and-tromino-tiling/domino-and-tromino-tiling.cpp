@@ -1,21 +1,49 @@
 class Solution {
-public:
+private:
     int MOD = 1e9 + 7;
-    int numTilings(int n) {
-       vector<long long int> dp(n+3);
-       dp[0] = 1;
-       dp[1] = 1;
-       dp[2] = 2;
-       dp[3] = 5;
+    int dp[1001][2][2];
+    int f(int i,bool a,bool b,int &n) {
 
-       for(int i = 4 ; i <= n ; i++) {
-            long long int domino = (dp[i-1] + dp[i-2])%MOD;
-            long long int tromino = 0;
-            for(int j = 3 ; j <= i ; j++) {
-                tromino = ((tromino + 2*dp[i-j])%MOD);
-            }
-            dp[i] = (domino + tromino) % MOD;
-       }  
-       return dp[n];
+        if(i >= n)
+            return 1;
+        if(dp[i][a][b] != -1)
+            return dp[i][a][b];
+
+        int c = 0;
+        if(!a & b) c = 1;
+        if(a & !b) c = 2;
+
+        int ans = 0;
+
+        // Domino tile horizontally
+        if(n - i >= 2) { 
+            if(!c)
+                ans = (ans + f(i + 2,true,true,n)) % MOD;
+            else if(c == 1) 
+                ans = (ans + f(i + 1,true,false,n)) % MOD;
+            else 
+                ans = (ans + f(i + 1,false,true,n)) % MOD;
+                
+        }
+
+        // Domino tile Veritically
+        if(!c)
+            ans = (ans + f(i + 1,true,true,n)) % MOD;
+
+        // Tormino tile [2,1]
+        if(n - i >= 2 && !c) {
+            ans = (ans + f(i + 1,true,false,n)) % MOD;
+            ans = (ans + f(i + 1,false,true,n)) % MOD;
+        }
+        // Tormino tile [1,2]
+        if(n - i >= 2 && c) {
+            ans = (ans + f(i + 2,true,true,n)) % MOD;
+        }
+        return dp[i][a][b] = ans;
+    }
+public:
+    int numTilings(int n) {
+        memset(dp,-1,sizeof(dp));
+        return f(0,true,true,n);
     }
 };
