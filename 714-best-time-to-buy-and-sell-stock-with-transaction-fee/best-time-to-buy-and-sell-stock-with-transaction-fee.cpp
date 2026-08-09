@@ -20,8 +20,17 @@ public:
         return dp[i][flag] = ans;
     }
     int maxProfit(vector<int>& prices, int fee) {
-        int m = prices.size();
-        memset(dp,-1,sizeof(dp));
-        return f(prices,fee,0,true,m);
+        int n = prices.size();
+        // memset(dp,-1,sizeof(dp));
+        // return f(prices,fee,0,true,m);
+        vector<vector<int>> dp(n,vector<int>(2,0));
+        dp[0][1] = -prices[0];
+
+        for(int i = 1 ; i < n ; i++) {
+            dp[i][1] = max(-prices[i] + dp[i - 1][0],dp[i - 1][1]);
+            dp[i][0] = max(prices[i] - fee + dp[i - 1][1],dp[i - 1][0]);
+        }
+
+        return dp[n - 1][0];
     }
 };
