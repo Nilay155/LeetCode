@@ -1,56 +1,42 @@
 class Solution {
-public:
+private:
     int MOD = 1e9 + 7;
-    vector<vector<int>> dp;
-    vector<vector<int>> cache;
-    int solve(int n,int i) {
-        if(n == 0) return 1;
-        if(cache[n][i] != -1) return cache[n][i];
+public:
+    int knightDialer(int n) {
+        vector<vector<int>> dp(4,vector<int>(3,1));
+        dp[3][0] = dp[3][2] = 0;
 
-        int ans = 0;
-        for(int j = 1 ; j < 11 ; j++) {
-
-            if(i-1 == -1 || dp[i-1][j-1]) {
-                ans = (ans + solve(n-1,j)) % MOD;
-            }
-        }
-        return cache[n][i] = ans%MOD;
-    }
-    int func(int n) {
-        vector<int> curr(10,1); // n = 1
-
+        vector<vector<int>> moves = {{-2,-1},{-1,-2},{-2,1},{2,-1},{1,-2},{2,1},{1,2},{-1,2}};
+        
         for(int i = 2 ; i <= n ; i++) {
-            vector<int> next(10,0);
-            for(int j = 0 ; j < 10 ; j++) {
-                int temp = 0;
-                for(int k = 0 ; k < 10 ; k++) {
-                    if(dp[j][k]) {
-                        temp = (temp + curr[k])%MOD;
+            vector<vector<int>> next(4,vector<int>(3,0));
+            for(int u = 0 ; u < 3 ; u++) {
+                for(int v = 0 ; v < 3 ; v++) {
+                    for(int k = 0 ; k < 8 ; k++) {
+                        int nu = moves[k][0] + u;
+                        int nv = moves[k][1] + v;
+                        if(nu >= 0 && nu <= 3 && nv >= 0 && nv <= 2) {
+                            next[u][v] = (next[u][v] + dp[nu][nv]) % MOD;
+                        }
                     }
                 }
-                next[j] = temp%MOD;
             }
-            curr = next;
+            for(int k = 0 ; k < 8 ; k++) {
+                int nu = moves[k][0] + 3;
+                int nv = moves[k][1] + 1;
+                if(nu >= 0 && nu <= 3 && nv >= 0 && nv <= 2) {
+                    next[3][1] = (next[3][1] + dp[nu][nv]) % MOD;
+                }
+            }
+            dp = next;
         }
         int ans = 0;
-        for(int i = 0 ; i < 10 ; i++) {
-            ans = (ans + curr[i]) % MOD;
-        }
+        for(int i = 0 ; i < 3 ; i++) {
+            for(int j = 0 ; j < 3 ; j++) {
+                ans = (ans + dp[i][j]) % MOD;
+            }
+        }   
+        ans = (ans + dp[3][1]) % MOD;
         return ans;
-    }
-    int knightDialer(int n) {
-        dp = vector<vector<int>>(10,vector<int>(10,0));
-        cache = vector<vector<int>>(n+1,vector<int>(11,-1));
-        dp[0][4] = dp[0][6] = 1;
-        dp[1][6] = dp[1][8] = 1;
-        dp[2][9] = dp[2][7] = 1;
-        dp[3][4] = dp[3][8] = 1;
-        dp[4][3] = dp[4][9] = dp[4][0] = 1;
-        dp[6][0] = dp[6][1] = dp[6][7] = 1;
-        dp[7][2] = dp[7][6] = 1;
-        dp[8][1] = dp[8][3] = 1;
-        dp[9][2] = dp[9][4] = 1;
-        // return solve(n,0);
-        return func(n);
     }
 };
