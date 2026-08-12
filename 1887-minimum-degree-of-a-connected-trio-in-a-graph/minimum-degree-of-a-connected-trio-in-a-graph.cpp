@@ -14,7 +14,7 @@ public:
         int mini = INT_MAX;
         for(int x = 1 ; x <= n ; x++) {
             for(int y = 1 ; y <= n ; y++) {
-                if(x == y) continue;
+                if(x == y || !dp[x][y]) continue;
                 for(int z = 1 ; z <= n ; z++) {
                     if(y == z || x == z) continue;
                     bool k1 = dp[x][y], k2 = dp[y][z] , k3 = dp[x][z];
