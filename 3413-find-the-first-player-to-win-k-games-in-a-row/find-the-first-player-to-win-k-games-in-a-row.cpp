@@ -2,20 +2,41 @@ class Solution {
 public:
     int findWinningPlayer(vector<int>& skills, int k) {
         int n = skills.size();
-        k = min(k,n);
-        int wins = 0;
-        int winner = 0;
+        if(k >= n) k = n - 1;
 
-        for(int i = 1 ; i < n ; i++) {
+        stack<int> st;
+        vector<int> nextGreaterElement(n,n);
+        st.push(n - 1);
 
-            if(skills[winner] > skills[i]) {
-                wins += 1;
-            } else {
-                wins = 1;
-                winner = i;
-            }
-            if(wins >= k) return winner;
+        for(int i = n - 2 ; i >= 0 ; i--) {
+            while(!st.empty() && skills[st.top()] < skills[i])
+                st.pop();
+            
+            if(!st.empty())
+                nextGreaterElement[i] = st.top();
+            st.push(i);
         }
-        return winner;
+
+        int maxi = 0;
+        for(int i = 0 ; i < n ; i++) {
+            int nge = nextGreaterElement[i];
+            int curr = skills[i];
+            int wins = 0;
+
+            if(curr > maxi && maxi != 0)
+                wins = 1;
+            else if(maxi > curr)
+                continue;
+
+
+            wins += (nge - i - 1);
+            if(nge == n)
+                wins = n;
+            if(wins >= k)
+                return i;
+
+            maxi = max(maxi,curr);
+        }
+        return 0;
     }
 };
