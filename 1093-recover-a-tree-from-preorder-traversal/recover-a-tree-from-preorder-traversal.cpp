@@ -11,70 +11,52 @@
  */
 class Solution {
 private:
-    int node(string &traversal,int &i,int n) {
-        int parent = 0;
-        while(i < n && traversal[i] != '-') {
-            parent = parent * 10 + (traversal[i]-'0');
-            i++;
-        }
-        return parent;
-    }
-    int depth(string &traversal,int &i,int n) {
-        int d = 0;
-        while(i < n && !isdigit(traversal[i])) {
-            d++;
-            i++;
-        }
-        return d;
-    }
-    void recover(TreeNode* &root,vector<pair<int,int>> &arr,int depth,int &i) {
-        // NLR
-
-        int d = -1, node = -1;
-        if(i < arr.size()) {
-            d = arr[i].second;
-            node = arr[i].first;
-        }
-        // Left Child
-        if(d == depth) {
-            if(!root -> left) {
-                root -> left = new TreeNode(node);
-                i += 1;
-                recover(root->left,arr,depth+1,i);
-            }
-        }
+    vector<int> dashCounts;
+    vector<int> nodeValues;
+    TreeNode* constructTree(string &str,int &i,int &j,int depth) {
+        if(i >= nodeValues.size())
+            return nullptr;
         
-        d = -1, node = -1;
-        if(i < arr.size()) {
-            d = arr[i].second;
-            node = arr[i].first;
-        }
-        // Right Child
-        if(d == depth) {
-            if(!root -> right) {
-                root -> right = new TreeNode(node);
-                i += 1;
-                recover(root->right,arr,depth+1,i);
-            }
-        }
+        TreeNode* node = new TreeNode(nodeValues[i]);
+        
+        if(j < dashCounts.size() && depth == dashCounts[j])
+            node -> left = constructTree(str,++i,++j,depth + 1);
+        
+        if(j < dashCounts.size() && depth == dashCounts[j])
+            node -> right = constructTree(str,++i,++j,depth + 1);
+        
+        return node;
+
     }
 public:
     TreeNode* recoverFromPreorder(string traversal) {
-        int n = traversal.size();
-        vector<pair<int,int>> arr;
-        int i = 0;
+        string str;
+        int count = 0, n = traversal.length();
 
-        int parent = 0;
-        int d = 0;
-
-        while(i < n) {
-            parent = node(traversal,i,n);
-            arr.push_back({parent,d});
-            d = depth(traversal,i,n);
+        for(int i = 0 ; i < n ; i++) {
+            if(traversal[i] == '-')
+                count += 1;
+            else {
+                if(count > 0)
+                    dashCounts.push_back(count);
+                count = 0;
+            }
         }
-        TreeNode* root = new TreeNode(arr[0].first);
-        int x = 1;
-        recover(root,arr,1,x);
-        return root;
+
+        int number = 0;
+        for(int i = 0 ; i < n ; i++) {
+
+            if(isdigit(traversal[i])) {
+                number = number * 10 + (traversal[i] - '0');
+            } else {
+                if(number > 0) 
+                    nodeValues.push_back(number);
+                number = 0;
+            }
+        } 
+        if(number > 0)
+            nodeValues.push_back(number);
+        int k1 = 0, k2 = 0;
+        return constructTree(traversal,k1,k2,1);
     }
 };
