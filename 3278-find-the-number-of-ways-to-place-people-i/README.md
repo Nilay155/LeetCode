@@ -4,7 +4,7 @@
 
 <ul>
 	<li><code>A</code> is on the <strong>upper left</strong> side of <code>B</code>, and</li>
-	<li>there are no other points in the rectangle (or line) they make (<strong>including the border</strong>).</li>
+	<li>there are no other points in the rectangle (or line) they make (<strong>including the border</strong>), except for the points <code>A</code> and <code>B</code>.</li>
 </ul>
 
 <p>Return the count.</p>
@@ -21,7 +21,7 @@
 
 <p><img src="https://assets.leetcode.com/uploads/2024/01/04/example1alicebob.png" style="width: 427px; height: 350px;" /></p>
 
-<p>There is no way to choose <code>A</code> and <code>B</code> so <code>A</code> is on the upper left side of <code>B</code>.</p>
+<p>There is no way to choose <code>A</code> and <code>B</code> such that&nbsp;<code>A</code> is on the upper left side of <code>B</code>.</p>
 </div>
 
 <p><strong class="example">Example 2:</strong></p>
