@@ -1,35 +1,35 @@
 class Solution {
-public:
+private:
     int dp[101][101][21];
-    int solve(vector<int> &houses,vector<vector<int>> &cost,int m,int n,int target,int i,int prevHouse) {
-        if(target == 0 && i >= m) return 0;
-        if(i >= m || target < 0) return 1e9;
-        if(dp[i][target][prevHouse] != -1) return dp[i][target][prevHouse];
+    int f(vector<int> &houses,vector<vector<int>> &cost,int &target,int i,int k,int prevColor) {
 
-        int res = 1e9;
+        if(i >= houses.size() && k == target) 
+            return 0;
+        
+        if(i >= houses.size() || k > target)
+            return 1e9;
+        
+        if(dp[i][k][prevColor] != -1)
+            return dp[i][k][prevColor];
+        
+        int n = cost[i].size();
 
-        // Coloring the i-th not painted house
-        if(!houses[i]) {
-            for(int j = 0 ; j < n ; j++) {
-                if(prevHouse == j+1) {
-                    res = min(res, cost[i][j] + solve(houses,cost,m,n,target,i+1,prevHouse));
-                } else {
-                    res = min(res,cost[i][j] + solve(houses,cost,m,n,target-1,i+1,j+1));
-                }
-            }
+        int ans = 1e9;
+        if(houses[i] != 0) {
+            ans = f(houses,cost,target,i + 1,(i - 1 >= 0 ? (houses[i] == prevColor ? k : k + 1) : (k) ), houses[i]);
         } else {
-                if(prevHouse == houses[i]) {
-                    res = min(res,solve(houses,cost,m,n,target,i+1,prevHouse));
-                } else {
-                    res = min(res,solve(houses,cost,m,n,target-1,i+1,houses[i]));
-                }
+            for(int j = 0 ; j < n ; j++) {
+                int rec = cost[i][j] + f(houses,cost,target,i + 1,(i - 1 >= 0 ? (j+1 == prevColor ? k : k + 1) : (k) ), j + 1);
+                ans = min(ans,rec);
+            }
         }
-        return dp[i][target][prevHouse] = res;
+        return dp[i][k][prevColor] = ans;
+
     }
+public:
     int minCost(vector<int>& houses, vector<vector<int>>& cost, int m, int n, int target) {
         memset(dp,-1,sizeof(dp));
-        int ans = solve(houses,cost,m,n,target,0,0);
-        if(ans >= 1e9) return -1;
-        else return ans;
+        int costt = f(houses,cost,target,0,1,0);
+        return costt == 1e9 ? -1 : costt;
     }
 };
