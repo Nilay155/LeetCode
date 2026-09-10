@@ -1,59 +1,91 @@
 class Solution {
-public:
+private:
     int MOD = 1e9 + 7;
-    vector<vector<int>> arr; // To store apple positions
     int dp[51][51][11];
 
-    // Check if there's at least one apple in the submatrix (r1, c1) to (r2-1, c2-1)
-    bool check(int r1, int c1, int r2, int c2) {
-        int res = 0;
-        for (int i = r1; i < r2; i++) {
-            for (int j = c1; j < c2; j++) {
-                res += arr[i][j];
-            }
+    int f(vector<vector<int>> &prefix,int r,int c,int k,int &n,int &m) {
+
+        if(r < n && c < m && k == 1) {
+            int x1 = r, y1 = c, x2 = n - 1, y2 = m - 1;
+            int area = 0;
+
+            if(x1 - 1 >= 0)
+                area -= prefix[x1 - 1][y2];
+            if(y1 - 1 >= 0)
+                area -= prefix[x2][y1 - 1];
+            if(x1 - 1 >= 0 && y1 - 1 >= 0)
+                area += prefix[x1 - 1][y1 - 1];
+
+            area += prefix[x2][y2];
+
+            return area > 0 ? 1 : 0;
         }
-        return res > 0;  // Return true if there's at least one apple
+        
+        if(r >= n || c >= m || k <= 1)
+            return 0;
+
+        if(dp[r][c][k] != -1)
+            return dp[r][c][k];
+
+        int ans = 0;
+
+        // horizontal cut
+        for(int rr = r ; rr < n - 1 ; rr++) {
+            int x1 = r, y1 = c, x2 = rr, y2 = m - 1;
+            int area = 0;
+
+            if(x1 - 1 >= 0)
+                area -= prefix[x1 - 1][y2];
+            if(y1 - 1 >= 0)
+                area -= prefix[x2][y1 - 1];
+            if(x1 - 1 >= 0 && y1 - 1 >= 0)
+                area += prefix[x1 - 1][y1 - 1];
+            area += prefix[x2][y2];
+
+            if(area)
+                ans = (ans + f(prefix,rr + 1,c,k - 1,n,m)) % MOD;
+
+        }
+        // vertical cut
+        for(int cc = c ; cc < m - 1 ; cc++) {
+            int x1 = r, y1 = c, x2 = n - 1, y2 = cc;
+
+            int area = 0;
+
+            if(x1 - 1 >= 0)
+                area -= prefix[x1 - 1][y2];
+            if(y1 - 1 >= 0)
+                area -= prefix[x2][y1 - 1];
+            if(x1 - 1 >= 0 && y1 - 1 >= 0)
+                area += prefix[x1 - 1][y1 - 1];
+            area += prefix[x2][y2];
+
+            if(area)
+                ans = (ans + f(prefix,r,cc + 1,k - 1,n,m)) % MOD;
+        }
+        return dp[r][c][k] = ans % MOD;
     }
-
-    // Recursive function to solve the problem
-    int solve(vector<string> &pizza, int row, int col, int k, int &n, int &m) {
-        if (k == 1) return check(row, col, n, m);  // If this is the last cut, check if there's an apple in this partition
-        if (dp[row][col][k] != -1) return dp[row][col][k];
-
-        int res = 0;
-
-        // Try horizontal cuts
-        for (int i = row + 1; i < n; i++) {
-            if (check(row, col, i, m)) {  // Check if the upper partition has apples
-                res = (res + solve(pizza, i, col, k - 1, n, m)) % MOD;  // Recur for the lower partition
-            }
-        }
-
-        // Try vertical cuts
-        for (int j = col + 1; j < m; j++) {
-            if (check(row, col, n, j)) {  // Check if the left partition has apples
-                res = (res + solve(pizza, row, j, k - 1, n, m)) % MOD;  // Recur for the right partition
-            }
-        }
-
-        return dp[row][col][k] = res;
-    }
-
+public:
     int ways(vector<string>& pizza, int k) {
-        int n = pizza.size();
-        int m = pizza[0].size();
+        int n = pizza.size(), m = pizza[0].length();
+        vector<vector<int>> prefix(n,vector<int>(m,0));
 
-        arr = vector<vector<int>>(n, vector<int>(m, 0));
-        memset(dp, -1, sizeof(dp));
-
-        // Populate the apple positions in the arr matrix
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                arr[i][j] = (pizza[i][j] == 'A') ? 1 : 0;
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                int val = (pizza[i][j] == 'A' ? 1 : 0);
+                prefix[i][j] = val + (i - 1 >= 0 ? prefix[i - 1][j] : 0) 
+                        + (j - 1 >= 0 ? prefix[i][j - 1] : 0) - (i - 1 >= 0 && j - 1 >= 0 ? prefix[i - 1][j - 1] : 0);
             }
         }
+        memset(dp,-1,sizeof(dp));
+        return f(prefix,0,0,k,n,m);
 
-        // Start the recursive process from the top-left corner (0, 0)
-        return solve(pizza, 0, 0, k, n, m);
+        
+        // for(int i = 0 ; i < n ; i++) {
+        //     for(int j = 0 ; j < m ; j++) {
+
+        //     }
+        // }
+
     }
 };
