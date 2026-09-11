@@ -1,29 +1,19 @@
 class Solution {
 public:
     int kthFactor(int n, int k) {
-        vector<int> front,back;
-        for(int i = 1 ; i*i <= n ; i++) {
-            if(n%i == 0) {
-                int f1 = i, f2 = n/i;
-                if(f1 != f2) {
-                    front.push_back(f1);
-                    back.push_back(f2);
-                } else {
-                    front.push_back(f1);
-                }
+        vector<int> factors;
+
+        for(int s = 1 ; s <= sqrt(n) ; s++) {
+            if(n % s == 0) {
+                factors.push_back(s);
+                int t = n / s;
+                if(n % t == 0 && s != t) 
+                    factors.push_back(t);
             }
         }
-        int ans = -1;
-        int kth = 0;
-        if(front.size() >= k) return front[k-1];
-        
-        kth = front.size();
-        for(int i = back.size()-1 ; i >= 0 ; i--) {
-            if(++kth == k) {
-                ans = back[i];
-                break;
-            }
-        }
-        return ans;
+        sort(factors.begin(),factors.end());
+        if(factors.size() < k)
+            return -1;
+        return factors[k - 1];
     }
 };
