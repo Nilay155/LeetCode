@@ -10,9 +10,6 @@ public:
         int dy = fy - sy;
 
         int target = max(abs(dx), abs(dy));
-        sx += (dx > 0 ? target : -target);
-        sy += (dy > 0 ? target : -target);
-
         if(target <= t)
             return true;
         return false;
