@@ -1,37 +1,32 @@
 class Solution {
-public:
+private:
     int MOD = 1e9 + 7;
-    vector<string> s = {
-        "123",
-        "121",
-        "212",
-        "213",
-        "132",
-        "131",
-        "231",
-        "232",
-        "321",
-        "313",
-        "312",
-        "323"
-    };
     int dp[5001][4][4][4];
-    int solve(int n,int k,int a,int b,int c) {
-        if(k == n) return 1;
-        if(dp[k][a][b][c] != -1) return dp[k][a][b][c];
+    int f(int n,vector<vector<int>> &colorCombinations,int x,int y,int z) {
+        if(n == 0)
+            return 1;
+        if(dp[n][x][y][z] != -1)
+            return dp[n][x][y][z];
 
-        int res = 0;
-        for(int i = 0 ; i < 12 ; i++) { // Twelve No Ways to color every row
-            if(k == 0) res = (res + solve(n,k+1,s[i][0]-'0',s[i][1]-'0',s[i][2]-'0')) % MOD;
-            else {
-                if(a == s[i][0]-'0' || b == s[i][1]-'0' || c == s[i][2]-'0') continue;
-                else res = (res + solve(n,k+1,s[i][0]-'0',s[i][1]-'0',s[i][2]-'0')) % MOD;
-            } 
+        int ans = 0;
+        for(int i = 0 ; i < (int) colorCombinations.size() ; i++) {
+            int nx = colorCombinations[i][0], ny = colorCombinations[i][1],
+            nz = colorCombinations[i][2];
+            if(nx != x && ny != y && nz != z) {
+                ans = (ans + f(n - 1,colorCombinations,nx,ny,nz)) % MOD;
+            }
         }
-        return dp[k][a][b][c] = res;
+        return dp[n][x][y][z] = ans % MOD;
     }
+public:
     int numOfWays(int n) {
+        // r -> 1, y -> 2, g -> 3
+        vector<vector<int>> colorCombinations = {
+            {1,2,3},{1,3,2},{1,2,1},{1,3,1},
+            {2,1,3},{2,3,1},{2,1,2},{2,3,2},
+            {3,2,1},{3,1,2},{3,1,3},{3,2,3}
+        };
         memset(dp,-1,sizeof(dp));
-        return solve(n,0,0,0,0);
+        return f(n,colorCombinations,0,0,0);
     }
 };
