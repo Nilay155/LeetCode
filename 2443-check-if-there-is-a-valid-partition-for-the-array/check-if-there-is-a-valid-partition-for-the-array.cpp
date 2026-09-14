@@ -1,27 +1,27 @@
 class Solution {
+private:
+    
+    bool f(vector<int> &nums,int i,int n,vector<int> &dp) {
+        if(i >= n)
+            return true;
+        
+        if(dp[i] != -1)
+            return dp[i];
+
+        // window of size - 2
+        bool op1 = (i + 1 < n ? nums[i] == nums[i + 1] ? f(nums,i + 2,n,dp) : false : false);
+
+        // window of size - 3
+        bool op2 = (i + 2 < n ? (nums[i] == nums[i + 1] && nums[i + 1] == nums[i + 2]) ? f(nums,i + 3,n,dp) : false : false);
+
+        bool op3 = (i + 2 < n ? (nums[i] + 1 == nums[i + 1]&& nums[i + 1] + 1 == nums[i + 2]) ? f(nums,i + 3,n,dp) : false : false);
+
+        return dp[i] = op1 || op2 || op3;
+    }
 public:
     bool validPartition(vector<int>& nums) {
         int n = nums.size();
-        vector<bool> dp(n+1,false);
-        dp[0] = true;
-
-        for(int l = 1 ; l <= n ; l++) {
-            if(l-2 >= 2 || l == 2) {
-
-                if(nums[l-2] == nums[l-1]) {
-                    dp[l] = dp[l] | dp[l - 2];
-                }
-            }
-
-            if(l-3 >= 2 || l == 3) {
-                if(nums[l-2] == nums[l-1] && nums[l-2] == nums[l-3]) {
-                    dp[l] = dp[l] | dp[l-3];
-                }
-                if(nums[l-1] == nums[l-2] + 1 && nums[l-2] == nums[l-3] + 1) {
-                    dp[l] = dp[l] | dp[l-3];
-                }
-            }
-        }
-        return dp[n];
+        vector<int> dp(n,-1);
+        return f(nums,0,n,dp);
     }
 };
