@@ -1,30 +1,46 @@
 class ProductOfNumbers {
-    vector<int> arr;
-    int latestZero;
+private:
+    vector<int> prefixProducts;
+    int lastZero;
 public:
     ProductOfNumbers() {
-        latestZero = -1;
+        prefixProducts.clear();
+        lastZero = -1;
     }
+    
     void add(int num) {
+        
+        if(prefixProducts.empty()) {
 
-        int n = arr.size();
-        if(num == 0) {
-            latestZero = n;
-            arr.push_back(1);
-        } else if(arr.empty()){
-            arr.push_back(num);
+            if(num == 0)
+                prefixProducts.push_back(1), lastZero = prefixProducts.size();
+            else
+                prefixProducts.push_back(num);
+
         } else {
-            int prod = arr.back() * num;
-            arr.push_back(prod);
+
+            if(num == 0)
+                prefixProducts.push_back(1), lastZero = prefixProducts.size();
+            else {
+                int back = prefixProducts.back();
+                int product = num * back;
+                prefixProducts.push_back(product);
+            }
         }
+        return ;
     }
     
     int getProduct(int k) {
-        int n = arr.size();
+        int sz = prefixProducts.size();
+        if(sz < k)
+            return 0;
+        if(lastZero > sz - k) 
+            return 0;
+        
+        int k1 = prefixProducts[sz - 1];
+        int k2 = (sz - k - 1 >= 0) ? prefixProducts[sz - k - 1] : 1;
 
-        if(latestZero != -1 && latestZero >= n-k) return 0;
-        else if(n == k) return arr[n-1];
-        else return arr[n-1]/arr[n-k-1];
+        return k1 / k2;
     }
 };
 
