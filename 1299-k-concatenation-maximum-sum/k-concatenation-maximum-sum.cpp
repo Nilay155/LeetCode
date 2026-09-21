@@ -4,35 +4,40 @@ private:
 public:
     int kConcatenationMaxSum(vector<int>& arr, int k) {
         int n = arr.size();
+        long long ans = 0;
 
-        vector<int> prefixSum(n);
-        prefixSum[0] = arr[0];
-        for(int i = 1 ; i < n ; i++) prefixSum[i] = arr[i] + prefixSum[i-1];
-
-        int maxSum = 0;
+        long long currSum = 0, pSum = 0, pMax = 0, sSum = 0, sMax = 0;
         for(int i = 0 ; i < n ; i++) {
-            maxSum = max(prefixSum[i],maxSum);
+            currSum += arr[i];
+            pSum += arr[i], sSum += arr[n - i - 1];
+
+            pMax = max(pSum,pMax);
+            sMax = max(sMax,sSum);
+
+            ans = max(ans,(long long) currSum);
+            if(currSum < 0)
+                currSum = 0;
         }
-        k -= 1;
+    
+        long long kSum = pSum, kPrevSum = 0;
+        for(int i = 2; i <= k; i++) {
 
-        long long sum = 0, maxi = 0;
-        for(int i = 0 ; i < n ; i++) {
-            sum += arr[i];
+            // k - 1, p
+            ans = max(ans, (long long) pMax + kSum);
 
-            long long totalSum = prefixSum[n-1];
-            long long roundSum = (long long) (k-1) * totalSum;
-            long long remainingSum = maxSum;
-            long long finalSum = (roundSum + remainingSum) % MOD;
+            // s, k - 1
+            ans = max(ans, (long long) sMax + kSum);
 
-            maxi = max(maxi,sum);
-            if(k > 0) {
-                long long restSum = prefixSum[n-1] - prefixSum[i];
-                maxi = max({maxi,sum + restSum + maxSum, sum + finalSum + restSum});
-            }
-            maxi %= MOD;
-            // Applying kadane's for the existing one
-            if(sum <= 0) sum = 0;
+            // s, k - 2, p
+            ans = max(ans, (long long) sMax + kPrevSum + pMax);
+
+            // t * k
+            kPrevSum = kSum;
+            kSum = kSum + pSum;
+
+            ans = max(ans, (long long) kSum);
+            ans %= MOD;
         }
-        return maxi;
+        return ans;
     }
 };
