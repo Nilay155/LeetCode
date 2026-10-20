@@ -1,30 +1,52 @@
 class Solution {
 private:
-    int dp[2001][2001];
-    int f(vector<int> &nums,int i,int j,int &sum) {
-        if(j-i+1 < 2) return 0;
-        if(dp[i][j] != -1) return dp[i][j];
+    int dp[2001][2001][4];
+    int f(vector<int> &nums,int l,int r,int prev) {
+        if(r - l + 1 <= 1)
+            return 0;
+        if(dp[l][r][prev] != -1)
+            return dp[l][r][prev];
 
-        int op1 = 0, op2 = 0, op3 = 0;
-        if(sum == nums[i] + nums[j]) op1 = 1 + f(nums,i+1,j-1,sum);
-        if(sum == nums[i] + nums[i+1]) op2 = 1 + f(nums,i+2,j,sum);
-        if(sum == nums[j] + nums[j-1]) op3 = 1 + f(nums,i,j-2,sum);
+        int op1 = 0;
+        int op2 = 0;
+        int op3 = 0;
 
-        return dp[i][j] = max({op1,op2,op3});
+        if(prev == 0) {
+            op1 = 1 + f(nums,l + 2,r,1);
+            op2 = 1 + f(nums,l + 1,r - 1,2);
+            op3 = 1 + f(nums,l,r - 2,3);
+        } else if(prev == 1) {
+            int prevSum = nums[l - 1] + nums[l - 2];
+            if(nums[l] + nums[l + 1] == prevSum)
+                op1 = 1 + f(nums,l + 2,r,1);
+            if(nums[l] + nums[r] == prevSum) 
+                op2 = 1 + f(nums,l + 1,r - 1,2);
+            if(nums[r] + nums[r - 1] == prevSum) 
+                op3 = 1 + f(nums,l,r - 2,3);
+        } else if(prev == 2) {
+            int prevSum = nums[l - 1] + nums[r + 1];
+            if(nums[l] + nums[l + 1] == prevSum)
+                op1 = 1 + f(nums,l + 2,r,1);
+            if(nums[l] + nums[r] == prevSum) 
+                op2 = 1 + f(nums,l + 1,r - 1,2);
+            if(nums[r] + nums[r - 1] == prevSum) 
+                op3 = 1 + f(nums,l,r - 2,3);
+        } else {
+            int prevSum = nums[r + 1] + nums[r + 2];
+            if(nums[l] + nums[l + 1] == prevSum)
+                op1 = 1 + f(nums,l + 2,r,1);
+            if(nums[l] + nums[r] == prevSum) 
+                op2 = 1 + f(nums,l + 1,r - 1,2);
+            if(nums[r] + nums[r - 1] == prevSum) 
+                op3 = 1 + f(nums,l,r - 2,3);
+        }
+
+        return dp[l][r][prev] = max({op1,op2,op3});
     }
 public:
     int maxOperations(vector<int>& nums) {
         int n = nums.size();
         memset(dp,-1,sizeof(dp));
-        int sum1 = nums[0] + nums[n-1];
-        int m1 = f(nums,1,n-2,sum1) + 1;
-        // memset(dp,-1,sizeof(dp));
-        int sum2 = nums[0] + nums[1];
-        int m2 = f(nums,2,n-1,sum2) + 1;
-        // memset(dp,-1,sizeof(dp));
-        int sum3 = nums[n-1] + nums[n-2];
-        int m3 = f(nums,0,n-3,sum3) + 1;
-
-        return max({m1,m2,m3});
+        return f(nums,0,n - 1,0);
     }
 };
